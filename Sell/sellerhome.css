@@ -1,0 +1,86 @@
+.font-family{
+    font-family: var(--font-family);
+    font-weight: 700;
+}
+.sellerhome__main{
+    background-color: #F9F7F2;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 20%;
+}
+.sellerhome__main__section__news h2{
+    padding: 30px;
+}
+.sellerhome__main__section__news p{
+    background-color: #C9D7E3;
+    padding: 25px 50px;
+}
+
+.sellerhome__main__section__todolist{
+    /* background-color: red; */
+}
+.sellerhome__main__section__todolist h2{
+    padding: 30px;
+}
+.sellerhome__main__section__todolist ul{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+.sellerhome__main__section__todolist ul li{
+    /* width: 12rem;
+    height: 10rem; */
+    background-color: #EAEAEA;
+    margin: auto;
+    font-weight: 900;
+    padding: 40px 70px;
+    white-space:nowrap;
+}
+
+
+/* 側欄 */
+.sellerhome__sidebar{
+    border-radius: 10px 0 0 10px;
+    background-color: #EADCCC;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 80%;
+    right: 0;   
+    display: flex;
+    justify-content: center;
+}
+.sellerhome__sidebar__center{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.sellerhome__sidebar__center ul li{
+    margin: 15px;
+    letter-spacing: 5px;
+    font-size: 1.3rem;
+} 
+@media screen and (max-width: 1440px) {
+    .sellerhome__main__section__todolist ul li{
+        padding: 20px 40px;
+    }
+}
+
+@media screen and (max-width: 990px) {
+    .sellerhome__main__section__todolist ul li{
+        padding: 10px 20px;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    
+}
+
+@media screen and (max-width: 550px) {
+    
+
+}

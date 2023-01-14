@@ -1,0 +1,68 @@
+.font-family{
+    font-family: var(--font-family);
+    font-weight: 700;
+}
+.sellerorder__main{
+    background-color: #F9F7F2;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 20%;
+    /* display: flex;
+    justify-content: center;
+    align-items: flex-start; */
+}
+
+.sellerorder__main__text{
+    display: flex;
+    flex-direction: column;
+    margin: 0px 20px;
+    height: 15%;
+}
+.sellerorder__main__text__input{
+    color: black;
+    display: flex;
+    /* justify-content: space-around; */
+}
+.sellerorder__main__table{
+    display: flex;
+    justify-content: center;
+    /* align-items: flex-start; */
+    overflow:auto;
+    height: 70%;
+}
+.sellerorder__main__table th{
+    padding: 7px 20px 10px 20px;
+    border-bottom: 2px solid black;
+    text-align: center;
+}
+.sellerorder__main__table td{
+    text-align: center;
+    padding: 7px 10px 10px 10px;
+    border-bottom: 1px solid gray;
+}
+
+/* 側欄 */
+.sellerorder__sidebar{
+    background-color: #EADCCC;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 80%;
+    right: 0;   
+    display: flex;
+    justify-content: center;
+}
+.sellerorder__sidebar__center{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.sellerorder__sidebar__center ul li{
+    margin: 15px;
+    letter-spacing: 5px;
+    font-size: 1.3rem;
+} 
