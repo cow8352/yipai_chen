@@ -3,6 +3,144 @@
     font-weight: 700;
 }
 .sellerhome__main{
+    margin: 10vh auto;
+}
+
+/* 側欄 */
+.sellerhome__sidebar{
+    width: 350px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #EADCCC;
+    border-radius: 10px 0 0 10px;
+}
+.sellerhome__sidebar__center{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+._sellerhome__pic{
+    position: relative;
+}
+.sellerhome__headIcon{
+    background-image: url(../image/addFileIcon.svg);
+    background-repeat: no-repeat;
+    width: 42px;
+    height: 42px;
+    z-index: 3;
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    cursor: pointer;
+}
+.sellerhome__sidebar__center ul li{
+    margin: 15px;
+    font-size: 1.3rem;
+} 
+.sellerhome__sidebar__center ul li button{
+    border: transparent;
+    border-radius: 10px;
+    letter-spacing: 3px;
+    padding: 5px 50px;
+    background-color: #EADCCC;
+} 
+
+/* @media screen and (max-width: 1440px) {
+    .SellerFrontPage__main__section__todolist ul li{
+        padding: 20px 40px;
+    }
+}
+@media screen and (max-width: 990px) {
+    .SellerFrontPage__main__section__todolist ul li{
+        padding: 10px 20px;
+    }
+}
+@media screen and (max-width: 700px) {   
+}
+@media screen and (max-width: 550px) {  
+} */
+
+
+/* SellerFrontPage */
+.SellerFrontPage__main__section__news h2{
+    padding: 30px;
+}
+.SellerFrontPage__main__section__news p{
+    background-color: #C9D7E3;
+    padding: 25px 50px;
+}
+.SellerFrontPage__main__section__todolist h2{
+    padding: 30px;
+}
+.SellerFrontPage__main__section__todolist ul{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+.SellerFrontPage__main__section__todolist ul li{
+    width: 10rem;
+    height: 6rem;
+    background-color: #EAEAEA;
+    font-weight: 900;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    white-space:nowrap;
+    margin: 0px 5px;
+}
+
+/* SellerPage */
+.sellerpage{
+    width: 60vw;
+    margin: auto;
+}
+.sellerpage__title{
+    background-color: #C9D7E3;
+}
+.sellerpage__main{
+display: flex;
+justify-content: space-around;
+background-color: #EAEAEA;
+height: 60vh;
+padding-top: 20px;
+}
+.sellerpage__main__left{
+    width: 40vh;
+    padding-top: 40px;
+}
+.sellerpage__main__left__name{
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+}
+.sellerpage__main__right{
+    width: 30vh;
+}
+.sellerpage__main__right__name{
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+}
+
+
+
+/* SellerUpload */
+
+
+/* SellerProduct  */
+
+
+/* sellerorder */
+.sellerorder__main{
     background-color: #F9F7F2;
     position: fixed;
     top: 0;
@@ -10,77 +148,32 @@
     left: 0;
     right: 20%;
 }
-.sellerhome__main__section__news h2{
-    padding: 30px;
-}
-.sellerhome__main__section__news p{
-    background-color: #C9D7E3;
-    padding: 25px 50px;
-}
 
-.sellerhome__main__section__todolist{
-    /* background-color: red; */
-}
-.sellerhome__main__section__todolist h2{
-    padding: 30px;
-}
-.sellerhome__main__section__todolist ul{
-    display: flex;
-    justify-content: center;
-    text-align: center;
-}
-.sellerhome__main__section__todolist ul li{
-    /* width: 12rem;
-    height: 10rem; */
-    background-color: #EAEAEA;
-    margin: auto;
-    font-weight: 900;
-    padding: 40px 70px;
-    white-space:nowrap;
-}
-
-
-/* 側欄 */
-.sellerhome__sidebar{
-    border-radius: 10px 0 0 10px;
-    background-color: #EADCCC;
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 80%;
-    right: 0;   
-    display: flex;
-    justify-content: center;
-}
-.sellerhome__sidebar__center{
+.sellerorder__main__text{
     display: flex;
     flex-direction: column;
+    margin: 0px 20px;
+    height: 15%;
+}
+.sellerorder__main__text__input{
+    color: black;
+    display: flex;
+    justify-content: space-between
+}
+.sellerorder__main__table{
+    display: flex;
     justify-content: center;
-    align-items: center;
+    /* align-items: flex-start; */
+    overflow:auto;
+    height: 70%;
+}
+.sellerorder__main__table th{
+    padding: 7px 20px 10px 20px;
+    border-bottom: 2px solid black;
     text-align: center;
 }
-.sellerhome__sidebar__center ul li{
-    margin: 15px;
-    letter-spacing: 5px;
-    font-size: 1.3rem;
-} 
-@media screen and (max-width: 1440px) {
-    .sellerhome__main__section__todolist ul li{
-        padding: 20px 40px;
-    }
-}
-
-@media screen and (max-width: 990px) {
-    .sellerhome__main__section__todolist ul li{
-        padding: 10px 20px;
-    }
-}
-
-@media screen and (max-width: 700px) {
-    
-}
-
-@media screen and (max-width: 550px) {
-    
-
+.sellerorder__main__table td{
+    text-align: center;
+    padding: 7px 10px 10px 10px;
+    border-bottom: 1px solid gray;
 }
