@@ -9,8 +9,8 @@ SellerOnclick.jsx
 SellerHome.jsx及css檔
 SellerLogin.jsx增加三元判斷式
 
-Brand.jsx和Footer.jsx加上↓
-讓Brand.jsx和Footer.jsx不出現在sellerhome
+Brand.jsx和Footer.jsx加上↓  
+讓Brand.jsx和Footer.jsx不出現在sellerhome  
 if(location.pathname === '/users/SellLogin'){
     return<></>
   }
