@@ -7,7 +7,7 @@
   
   .font-family{
     font-family: var(--font-family);
-    font-weight: 700;
+    font-weight: 600;
 }
 .space__container {
     display: flex;
@@ -32,11 +32,21 @@
     height: 210px;
     object-fit: cover;
 }
-
+.space__main-card-item h4{
+    /* line-height: rem; */
+    padding: 10px;
+}
+.space__main-card-item h6{
+    padding-bottom: 40px;
+}
+/* aside */
 .space__aside-menu{
     width: 200px;
     text-align: center;
-    margin: 50px 20px;
+    margin: 70px 20px;
+}
+.space__aside-menu h3{
+    padding: 20px 0;
 }
 /* banner */
 .space__banner {
@@ -48,9 +58,7 @@
     background-image: url("./first.png");
     background-repeat:no-repeat;
     background-size:cover;
-    
 }
-
 .space__page-item a{
     /* height: 100px; */
     color: white;

@@ -97,7 +97,7 @@ function Space() {
                         </div>
                         <h4>{space.space_name}</h4>
                         {/* <h4 className="space__main-card-item-text">英文名字</h4> */}
-                        <h5>{space.space_address}</h5>
+                        <h6>{space.space_address}</h6>
                       </Link>
                     </div>
                   );
