@@ -31,8 +31,8 @@ function Space() {
     // 通常會把去跟後端要資料的動作放在這裡
     async function getSpace() {
       let response = await axios.get(`http://localhost:3001/space?page=${page}`);
-      setSpace(response.data);
-      console.log(response.data);
+      setSpace(response.data.data);
+      console.log(response.data.data);
       setTotalPage(response.data.pagination.totalPage);
     }
     getSpace();
@@ -60,8 +60,7 @@ function Space() {
             setPage(i);
             // 處理網址
             navigate(`/space?page=${i}`);
-          }}
-          
+          }}   
         >
           {i}
         </li>
@@ -69,12 +68,6 @@ function Space() {
     }
     return pages;
   };
-
-
-
-
-
-  
 
   return (
     <>
@@ -109,10 +102,6 @@ function Space() {
               </Dropdown.Menu>
             </Dropdown>
           </nav>
-          
-
-          
-          
           <main>
             <div className="d-md-flex justify-content-between m-2 space__main__header">
               <div className="space__none550 col1 text-nowrap d-inline-flex">
@@ -139,30 +128,32 @@ function Space() {
             
             <ul>{getPages()}</ul>
 
-            {/* <div className="container space__main-card mt-5">
+            <div className="container space__main-card mt-5">
               <div className="row align-items-start">
-                {space.data.map((space, index) => {
+
+                {space.map((space_data, index) => {
                   return(
                     <div
-                      key={space.space_id}
+                      key={space_data.space_id}
                       className="col space__main-card-item"
                     >
-                      <Link to={`/space/${space.space_id}`}>
+                      <Link to={`/space/${space_data.space_id}`}>
                         <div className="position-relative">
                           <div className="Space__FaHeart_icon">
                             <Link to="#">
                             </Link>
                           </div>
-                          <img src={space.space_img_file} />
+                          <img src={space_data.space_img_file} />
                         </div>
-                        <h4>{space.space_name}</h4>
-                        <h6>{space.space_address}</h6>
+                        <h4>{space_data.space_name}</h4>
+                        <h6>{space_data.space_address}</h6>
                       </Link>
                     </div>
                   );
                 })}
               </div>
-            </div> */}
+            </div>
+
             <div>
 
               <Pagination className="space__page-item justify-content-center mt-4">
