@@ -8,21 +8,74 @@ import Button from 'react-bootstrap/Button';
 import { TbArrowsSort } from 'react-icons/tb'
 // import { FaHeart } from 'react-icons/fa'
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 
 function Space() {
+ 
+  // 為了處理網址
+  let navigate = useNavigate();
+  const { currentPage } = useParams();
+  const [page, setPage] = useState(parseInt(currentPage, 10) || 1); // 目前在哪一頁
+  const [totalPage, setTotalPage] = useState(); // 總共有幾頁
+
   const [space, setSpace] = useState([]);
+
+  useEffect(() => {
+    console.log('空陣列的 useEffect');
+  }, []);
 
   useEffect(() => {
     console.log('第二個參數是空陣列');
     // 在 component 初始化的時候跑一次
     // 通常會把去跟後端要資料的動作放在這裡
     async function getSpace() {
-      let response = await axios.get('http://localhost:3001/space');
+      let response = await axios.get(`http://localhost:3001/space?page=${page}`);
       setSpace(response.data);
+      console.log(response.data);
+      setTotalPage(response.data.pagination.totalPage);
     }
     getSpace();
-  }, []);
+  }, [page]);
+
+  const getPages = () => {
+    let pages = [];
+    for (let i = 1; i <= totalPage; i++) {
+      pages.push(
+        <li
+          style={{
+            display: 'inline-block',
+            margin: '2px',
+            backgroundColor: 'black',
+            borderColor: page === i ? '#00d1b2' : '#dbdbdb',
+            color: page === i ? '#fff' : '#363636',
+            borderWidth: '1px',
+            width: '28px',
+            height: '28px',
+            borderRadius: '3px',
+            textAlign: 'center',
+          }}
+          key={i}
+          onClick={(e) => {
+            setPage(i);
+            // 處理網址
+            navigate(`/space?page=${i}`);
+          }}
+          
+        >
+          {i}
+        </li>
+      );
+    }
+    return pages;
+  };
+
+
+
+
+
+  
+
   return (
     <>
       <header>
@@ -56,6 +109,10 @@ function Space() {
               </Dropdown.Menu>
             </Dropdown>
           </nav>
+          
+
+          
+          
           <main>
             <div className="d-md-flex justify-content-between m-2 space__main__header">
               <div className="space__none550 col1 text-nowrap d-inline-flex">
@@ -77,9 +134,14 @@ function Space() {
                 </Button>
               </div>
             </div>
-            <div className="container space__main-card mt-5">
+          
+            目前在第 {page} 頁
+            
+            <ul>{getPages()}</ul>
+
+            {/* <div className="container space__main-card mt-5">
               <div className="row align-items-start">
-                {space.map((space, index) => {
+                {space.data.map((space, index) => {
                   return(
                     <div
                       key={space.space_id}
@@ -89,22 +151,20 @@ function Space() {
                         <div className="position-relative">
                           <div className="Space__FaHeart_icon">
                             <Link to="#">
-                              {/* <FaHeart className="FaHeart_icon" /> */}
-                              {/* 收藏 */}
                             </Link>
                           </div>
                           <img src={space.space_img_file} />
                         </div>
                         <h4>{space.space_name}</h4>
-                        {/* <h4 className="space__main-card-item-text">英文名字</h4> */}
                         <h6>{space.space_address}</h6>
                       </Link>
                     </div>
                   );
                 })}
               </div>
-            </div>
+            </div> */}
             <div>
+
               <Pagination className="space__page-item justify-content-center mt-4">
                 <Pagination.First />
                 <Pagination.Prev />
