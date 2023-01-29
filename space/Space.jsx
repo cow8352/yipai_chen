@@ -20,13 +20,33 @@ function Space() {
   const [totalPage, setTotalPage] = useState(); // 總共有幾頁
 
   const [space, setSpace] = useState([]);
+  
 
   useEffect(() => {
     console.log('空陣列的 useEffect');
   }, []);
 
+  const [space_area, setSpaceArea] = useState("");
+  const handleSubmit = (event) => {
+    setSpaceArea(event.target.innerText);
+    console.log(event.target.innerText);
+    // ...
+  };
+
+
+  // async function handleSelect(e) {
+  //   console.log('handleSelect');
+  //   let response = await axios.get('http://localhost:3001/space', {
+  //     space_area,
+  //   //   space_name,
+  //   }
+  //   );
+  //   console.log(space_area);
+  // }
+
+
   useEffect(() => {
-    console.log('第二個參數是空陣列');
+    // console.log('第二個參數是空陣列');
     // 在 component 初始化的時候跑一次
     // 通常會把去跟後端要資料的動作放在這裡
     async function getSpace() {
@@ -37,6 +57,8 @@ function Space() {
     }
     getSpace();
   }, [page]);
+
+
 
   const getPages = () => {
     let pages = [];
@@ -69,6 +91,11 @@ function Space() {
     return pages;
   };
 
+
+
+
+
+
   return (
     <>
       <header>
@@ -82,11 +109,11 @@ function Space() {
             <h3>空間分類</h3>
             <hr />
             <Dropdown>
-              <Dropdown.Toggle variant="--color-bg" style={{ border: "none" }} id="dropdown-basic">
+              <Dropdown.Toggle variant="--color-bg" style={{ border: "none" }}>
                 依地點
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                <Dropdown.Item href="#/action-1">北</Dropdown.Item>
+                <Dropdown.Item id="space_area" type="text" value={space_area} onClick={handleSubmit}>北</Dropdown.Item>
                 <Dropdown.Item href="#/action-2">中</Dropdown.Item>
                 <Dropdown.Item href="#/action-3">南</Dropdown.Item>
               </Dropdown.Menu>
