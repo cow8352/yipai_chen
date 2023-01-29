@@ -45,6 +45,21 @@ app.get('/', (req, res, next) => {
 
     // 根據 offset, limit 去取得資料
 
+    let sql = 'SELECT * FROM space WHERE 1=1'
+    if(req.query.space_area){
+        sql += ' WHERE space_area = ?'
+        params.push(req.query.space_area);
+    }
+    
+    // const perPage = 6; // 一頁有六筆
+    // const totalPage = Math.ceil(total / perPage);
+    // const limit = perPage;
+    // const offset = perPage * (page - 1);
+    
+    // sql += ' LIMIT ? OFFSET ?'
+
+    // let [data] = await pool.execute(sql, params);
+
     let [data] = await pool.execute('SELECT * FROM space ORDER BY space_id LIMIT ? OFFSET ?', [limit, offset]);
     // let [data] = await pool.query('SELECT * FROM space');
 
