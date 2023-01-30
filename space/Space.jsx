@@ -6,33 +6,32 @@ import Pagination from 'react-bootstrap/Pagination';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Button from 'react-bootstrap/Button';
 import { TbArrowsSort } from 'react-icons/tb'
-// import { FaHeart } from 'react-icons/fa'
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+
 
 function Space() {
  
   // 為了處理網址
-  let navigate = useNavigate();
-  const { currentPage } = useParams();
-  const [page, setPage] = useState(parseInt(currentPage, 10) || 1); // 目前在哪一頁
-  const [totalPage, setTotalPage] = useState(); // 總共有幾頁
+  // let navigate = useNavigate();
+  // const { currentPage } = useParams();
+  // const [page, setPage] = useState(parseInt(currentPage, 10) || 1); // 目前在哪一頁
+  // const [totalPage, setTotalPage] = useState(); // 總共有幾頁
 
   const [space, setSpace] = useState([]);
-  
+  const [space_area, setSpace_area] = useState([]);
+
 
   useEffect(() => {
     console.log('空陣列的 useEffect');
   }, []);
 
-  const [space_area, setSpaceArea] = useState("");
-  const handleSubmit = (event) => {
-    setSpaceArea(event.target.innerText);
-    console.log(event.target.innerText);
-    // ...
-  };
-
+  // const [space_area, setSpaceArea] = useState("");
+  // const handleSubmit = (event) => {
+  //   setSpaceArea(event.target.innerText);
+  //   console.log(event.target.innerText);
+  //   // ...
+  // };
 
   // async function handleSelect(e) {
   //   console.log('handleSelect');
@@ -45,56 +44,73 @@ function Space() {
   // }
 
 
+
   useEffect(() => {
     // console.log('第二個參數是空陣列');
     // 在 component 初始化的時候跑一次
     // 通常會把去跟後端要資料的動作放在這裡
     async function getSpace() {
-      let response = await axios.get(`http://localhost:3001/space?page=${page}`);
-      setSpace(response.data.data);
-      console.log(response.data.data);
-      setTotalPage(response.data.pagination.totalPage);
+      let response = await axios.get(`http://localhost:3001/space`);
+      setSpace(response.data);
+      console.log(response.data);
+      // setTotalPage(response.data.pagination.totalPage);
     }
     getSpace();
-  }, [page]);
+  }, []);
 
+  function handleClick(e) {
+    // e.preventDefault();
+    const space_area = e.target.innerText;
+    console.log(space_area);
 
+    let filtered;
+    if (space_area === "北") {
+        filtered = space.filter(space => space.space_area === "北");
+    } else if (space_area === "中") {
 
-  const getPages = () => {
-    let pages = [];
-    for (let i = 1; i <= totalPage; i++) {
-      pages.push(
-        <li
-          style={{
-            display: 'inline-block',
-            margin: '2px',
-            backgroundColor: 'black',
-            borderColor: page === i ? '#00d1b2' : '#dbdbdb',
-            color: page === i ? '#fff' : '#363636',
-            borderWidth: '1px',
-            width: '28px',
-            height: '28px',
-            borderRadius: '3px',
-            textAlign: 'center',
-          }}
-          key={i}
-          onClick={(e) => {
-            setPage(i);
-            // 處理網址
-            navigate(`/space?page=${i}`);
-          }}   
-        >
-          {i}
-        </li>
-      );
+        filtered = space.filter(space => space.space_area === "中");
+    } else if (space_area === "南") {
+        filtered = space.filter(space => space.space_area === "南");
     }
-    return pages;
-  };
+    // const filtered = space.filter(space => {
+    //     return space.space_area == "北";
+      
+    // });
+    console.log(filtered);
+    setSpace(filtered);
+  }
 
 
-
-
-
+  // const getPages = () => {
+  //   let pages = [];
+  //   for (let i = 1; i <= totalPage; i++) {
+  //     pages.push(
+  //       <li
+  //         style={{
+  //           display: 'inline-block',
+  //           margin: '2px',
+  //           backgroundColor: 'black',
+  //           borderColor: page === i ? '#00d1b2' : '#dbdbdb',
+  //           color: page === i ? '#fff' : '#363636',
+  //           borderWidth: '1px',
+  //           width: '28px',
+  //           height: '28px',
+  //           borderRadius: '3px',
+  //           textAlign: 'center',
+  //         }}
+  //         key={i}
+  //         onClick={(e) => {
+  //           setPage(i);
+  //           // 處理網址
+  //           navigate(`/space?page=${i}`);
+  //         }}   
+  //       >
+  //         {i}
+  //       </li>
+  //     );
+  //   }
+  //   return pages;
+  // };
 
   return (
     <>
@@ -108,14 +124,15 @@ function Space() {
           <nav class="space__aside-menu">
             <h3>空間分類</h3>
             <hr />
+            
             <Dropdown>
               <Dropdown.Toggle variant="--color-bg" style={{ border: "none" }}>
                 依地點
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                <Dropdown.Item id="space_area" type="text" value={space_area} onClick={handleSubmit}>北</Dropdown.Item>
-                <Dropdown.Item href="#/action-2">中</Dropdown.Item>
-                <Dropdown.Item href="#/action-3">南</Dropdown.Item>
+                <Dropdown.Item value="北" onClick={handleClick}>北</Dropdown.Item>
+                <Dropdown.Item value="中" onClick={handleClick}>中</Dropdown.Item>
+                <Dropdown.Item value="南" onClick={handleClick}>南</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
             <br />
@@ -151,9 +168,9 @@ function Space() {
               </div>
             </div>
           
-            目前在第 {page} 頁
+            {/* 目前在第 {page} 頁
             
-            <ul>{getPages()}</ul>
+            <ul>{getPages()}</ul> */}
 
             <div className="container space__main-card mt-5">
               <div className="row align-items-start">
