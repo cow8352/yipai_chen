@@ -18,7 +18,9 @@ function Space() {
   // const [totalPage, setTotalPage] = useState(); // 總共有幾頁
 
   const [space, setSpace] = useState([]);
+  //space初始值
   const [originalSpace, setOriginalSpace] = useState([]);
+  //select顯示在頁面的值
   const [selectedLocation, setSelectedLocation] = useState('');
   const [selectedDays, setSelectedDays] = useState([]);
 
@@ -42,13 +44,17 @@ function Space() {
 
   //清除鍵
   const handleClear = () => {
+    //清空初始值
     setSpace(originalSpace);
     console.log(originalSpace);
+    //清空地點
     setSelectedLocation('');
+    //清空時間
     setSelectedDays([]);
   }
 
   const handleClick = (value, type) => {
+    //先設定一個filter(符合條件的新陣列)值
     let filtered;
     if (type === 'location') {
       // 處理地點選項
@@ -67,12 +73,12 @@ function Space() {
       filtered = space.filter(space => space.on_weekdays.includes(space_day));
       setSpace(filtered);
       // setSelectedDays([...selectedDays, value]);
+      //營業時間的陣列(重複不出現)
       if (selectedDays.includes(space_day)) {
         setSelectedDays(selectedDays.filter(d => d !== space_day));
       } else {
         setSelectedDays([...selectedDays, space_day]);
       }
-
       console.log(filtered);
       console.log('營業時間選項：', value)
     }
@@ -187,7 +193,8 @@ function Space() {
                  ))}
               </Dropdown.Menu>
             </Dropdown>
-            {/* <Dropdown>
+            {/* 為上面 Dropdown的展開
+              <Dropdown>
               <Dropdown.Toggle 
                 variant="--color-bg" 
                 style={{ border: "none" }} 
