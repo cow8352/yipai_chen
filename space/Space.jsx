@@ -9,9 +9,8 @@ import { TbArrowsSort } from 'react-icons/tb'
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 
-
 function Space() {
- 
+
   // 為了處理網址
   // let navigate = useNavigate();
   // const { currentPage } = useParams();
@@ -19,31 +18,14 @@ function Space() {
   // const [totalPage, setTotalPage] = useState(); // 總共有幾頁
 
   const [space, setSpace] = useState([]);
-  const [space_area, setSpace_area] = useState([]);
+  const [originalSpace, setOriginalSpace] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState('');
+  const [selectedDays, setSelectedDays] = useState([]);
 
 
   useEffect(() => {
     console.log('空陣列的 useEffect');
   }, []);
-
-  // const [space_area, setSpaceArea] = useState("");
-  // const handleSubmit = (event) => {
-  //   setSpaceArea(event.target.innerText);
-  //   console.log(event.target.innerText);
-  //   // ...
-  // };
-
-  // async function handleSelect(e) {
-  //   console.log('handleSelect');
-  //   let response = await axios.get('http://localhost:3001/space', {
-  //     space_area,
-  //   //   space_name,
-  //   }
-  //   );
-  //   console.log(space_area);
-  // }
-
-
 
   useEffect(() => {
     // console.log('第二個參數是空陣列');
@@ -53,33 +35,67 @@ function Space() {
       let response = await axios.get(`http://localhost:3001/space`);
       setSpace(response.data);
       console.log(response.data);
-      // setTotalPage(response.data.pagination.totalPage);
+      setOriginalSpace(response.data);
     }
     getSpace();
   }, []);
 
-  function handleClick(e) {
-    // e.preventDefault();
-    const space_area = e.target.innerText;
-    console.log(space_area);
-
-    let filtered;
-    if (space_area === "北") {
-        filtered = space.filter(space => space.space_area === "北");
-    } else if (space_area === "中") {
-
-        filtered = space.filter(space => space.space_area === "中");
-    } else if (space_area === "南") {
-        filtered = space.filter(space => space.space_area === "南");
-    }
-    // const filtered = space.filter(space => {
-    //     return space.space_area == "北";
-      
-    // });
-    console.log(filtered);
-    setSpace(filtered);
+  //清除鍵
+  const handleClear = () => {
+    setSpace(originalSpace);
+    console.log(originalSpace);
+    setSelectedLocation('');
+    setSelectedDays([]);
   }
 
+  const handleClick = (value, type) => {
+    let filtered;
+    if (type === 'location') {
+      // 處理地點選項
+      const space_area = value;
+      setSpace(originalSpace); // 設置回初始值
+      // console.log('初始值：', originalSpace);
+      filtered = originalSpace.filter(space => space.space_area === space_area);
+      setSpace(filtered);
+      setSelectedLocation(value);
+      console.log(filtered);
+      console.log('地點選項：', value)
+    }
+    if (type === 'day') {
+      // 處理營業時間選項
+      const space_day = value
+      filtered = space.filter(space => space.on_weekdays.includes(space_day));
+      setSpace(filtered);
+      // setSelectedDays([...selectedDays, value]);
+      if (selectedDays.includes(space_day)) {
+        setSelectedDays(selectedDays.filter(d => d !== space_day));
+      } else {
+        setSelectedDays([...selectedDays, space_day]);
+      }
+
+      console.log(filtered);
+      console.log('營業時間選項：', value)
+    }
+  }
+
+  // function handleClick(e) {
+  //   // e.preventDefault();
+  //   const space_area = e.target.innerText;
+  //   console.log(space_area);
+  //   let filtered;
+  //   if (space_area === "北") {
+  //       filtered = space.filter(space => space.space_area === "北");
+  //   } else if (space_area === "中") {
+  //       filtered = space.filter(space => space.space_area === "中");
+  //   } else if (space_area === "南") {
+  //       filtered = space.filter(space => space.space_area === "南");
+  //   }
+  //   // const filtered = space.filter(space => {
+  //   //     return space.space_area == "北";
+  //   // });
+  //   console.log(filtered);
+  //   setSpace(filtered);
+  // }
 
   // const getPages = () => {
   //   let pages = [];
@@ -103,7 +119,7 @@ function Space() {
   //           setPage(i);
   //           // 處理網址
   //           navigate(`/space?page=${i}`);
-  //         }}   
+  //         }}
   //       >
   //         {i}
   //       </li>
@@ -124,27 +140,73 @@ function Space() {
           <nav class="space__aside-menu">
             <h3>空間分類</h3>
             <hr />
-            
             <Dropdown>
-              <Dropdown.Toggle variant="--color-bg" style={{ border: "none" }}>
-                依地點
+              <Dropdown.Toggle variant="--color-bg" style={{ border: "none" }} >
+                依地點 {selectedLocation}
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                <Dropdown.Item value="北" onClick={handleClick}>北</Dropdown.Item>
-                <Dropdown.Item value="中" onClick={handleClick}>中</Dropdown.Item>
-                <Dropdown.Item value="南" onClick={handleClick}>南</Dropdown.Item>
+                <Dropdown.Item
+                  value="北"
+                  onClick={() => handleClick('北', 'location')}
+                >
+                  北
+                </Dropdown.Item>
+                <Dropdown.Item
+                  value="中"
+                  onClick={() => handleClick('中', 'location')}
+                >
+                  中
+                </Dropdown.Item>
+                <Dropdown.Item
+                  value="南"
+                  onClick={() => handleClick('南', 'location')}
+                >
+                  南
+                </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
             <br />
             <Dropdown>
-              <Dropdown.Toggle variant="--color-bg" style={{ border: "none" }} id="dropdown-basic">
+              <Dropdown.Toggle
+                variant="--color-bg"
+                style={{ border: "none" }} 
+                id="dropdown-basic"
+              >
+                依營業時間 
+              </Dropdown.Toggle>
+              <br />
+              {selectedDays.join(', ')}
+              <Dropdown.Menu>
+                {['週一', '週二', '週三', '週四', '週五', '週六', '週日'].map(day => (
+                    <Dropdown.Item
+                      value={day}
+                      onClick={() => handleClick(day, 'day')}
+                    >
+                      {day}
+                    </Dropdown.Item>
+                 ))}
+              </Dropdown.Menu>
+            </Dropdown>
+            {/* <Dropdown>
+              <Dropdown.Toggle 
+                variant="--color-bg" 
+                style={{ border: "none" }} 
+                id="dropdown-basic"
+              >
                 依營業時間
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                <Dropdown.Item href="#/action-1">假日</Dropdown.Item>
-                <Dropdown.Item href="#/action-2">平日</Dropdown.Item>
+                <Dropdown.Item
+                value="周一"onClick={() => handleClick('周一', 'day')}>周一</Dropdown.Item>
+                <Dropdown.Item value="週二" onClick={() => handleClick('週二', 'day')}>週二</Dropdown.Item>
+                <Dropdown.Item value="週三" onClick={() => handleClick('週三', 'day')}>週三</Dropdown.Item>
+                <Dropdown.Item value="週四" onClick={() => handleClick('週四', 'day')}>週四</Dropdown.Item>
+                <Dropdown.Item value="週五" onClick={() => handleClick('週五', 'day')}>週五</Dropdown.Item>
+                <Dropdown.Item value="週六" onClick={() => handleClick('週六', 'day')}>週六</Dropdown.Item>
+                <Dropdown.Item value="週日" onClick={() => handleClick('週日', 'day')}>週日</Dropdown.Item>
               </Dropdown.Menu>
-            </Dropdown>
+                </Dropdown> */}
+            <Button className="mt-4" variant="dark" onClick={handleClear}>Clear</Button>
           </nav>
           <main>
             <div className="d-md-flex justify-content-between m-2 space__main__header">
