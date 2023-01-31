@@ -2,12 +2,13 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import './space.css'
 import Dropdown from 'react-bootstrap/Dropdown'
-import Pagination from 'react-bootstrap/Pagination';
+// import Pagination from 'react-bootstrap/Pagination';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Button from 'react-bootstrap/Button';
 import { TbArrowsSort } from 'react-icons/tb'
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import Pagination from './Pagination'
 
 function Space() {
 
@@ -24,7 +25,30 @@ function Space() {
   const [selectedLocation, setSelectedLocation] = useState('');
   const [selectedDays, setSelectedDays] = useState([]);
 
+  //清除鍵
+  const handleClear = () => {
+    //清空初始值
+    setSpace(originalSpace);
+    console.log(originalSpace);
+    //清空地點
+    setSelectedLocation('');
+    //清空時間
+    setSelectedDays([]);
+  }
 
+
+  const [currentPage, setCurrentPage] = useState(1)
+  const [postsPerPage, setPostPerPage] = useState(6)
+  const lastPostIndex = currentPage * postsPerPage
+  const firstPostIndex = lastPostIndex - postsPerPage
+  const currentPosts = space.slice(firstPostIndex, lastPostIndex)
+
+
+ 
+
+const handlePageClick = (data) => {
+  setCurrentPage(data.selected);
+};
   useEffect(() => {
     console.log('空陣列的 useEffect');
   }, []);
@@ -42,15 +66,10 @@ function Space() {
     getSpace();
   }, []);
 
-  //清除鍵
-  const handleClear = () => {
-    //清空初始值
-    setSpace(originalSpace);
-    console.log(originalSpace);
-    //清空地點
-    setSelectedLocation('');
-    //清空時間
-    setSelectedDays([]);
+  //由新至舊
+  const handleSort = () => {
+    const sorted = [...space].sort((a, b) => b.space_id - a.space_id);
+    setSpace(sorted);
   }
 
   const handleClick = (value, type) => {
@@ -134,6 +153,8 @@ function Space() {
   //   return pages;
   // };
 
+
+  
   return (
     <>
       <header>
@@ -230,21 +251,16 @@ function Space() {
                 <Button
                   className="space__button col-4 text-nowrap"
                   variant="dark"
+                  onClick={handleSort}
                 >
                   由新至舊
                   <TbArrowsSort />
                 </Button>
               </div>
             </div>
-          
-            {/* 目前在第 {page} 頁
-            
-            <ul>{getPages()}</ul> */}
-
             <div className="container space__main-card mt-5">
               <div className="row align-items-start">
-
-                {space.map((space_data, index) => {
+                {currentPosts.map((space_data, index) => {
                   return(
                     <div
                       key={space_data.space_id}
@@ -253,8 +269,7 @@ function Space() {
                       <Link to={`/space/${space_data.space_id}`}>
                         <div className="position-relative">
                           <div className="Space__FaHeart_icon">
-                            <Link to="#">
-                            </Link>
+                            <Link to="#"></Link>
                           </div>
                           <img src={space_data.space_img_file} />
                         </div>
@@ -266,10 +281,14 @@ function Space() {
                 })}
               </div>
             </div>
-
+            <Pagination className="space__page-item "
+        totalPosts={space.length}
+        postsPerPage={postsPerPage}
+        setCurrentPage={setCurrentPage}
+      />
             <div>
-
-              <Pagination className="space__page-item justify-content-center mt-4">
+              {/* <Pagination className="space__page-item justify-content-center mt-4"
+              >
                 <Pagination.First />
                 <Pagination.Prev />
                 <Pagination.Item>{1}</Pagination.Item>
@@ -277,7 +296,8 @@ function Space() {
                 <Pagination.Item>{3}</Pagination.Item>
                 <Pagination.Next />
                 <Pagination.Last />
-              </Pagination>
+              </Pagination> */}
+              
             </div>
           </main>
         </div>
