@@ -28,50 +28,49 @@ app.get('/', (req, res, next) => {
 
   app.get('/space', async (req, res, next) => {
     console.log('這裡是 /space');
-    const page = req.query.page || 1;
+    // const page = req.query.page || 1;
 
     // 總筆數？
-   let [results] = await pool.execute('SELECT COUNT(*) AS total FROM space');
+  //  let [results] = await pool.execute('SELECT COUNT(*) AS total FROM space');
   //  console.log('GET /space -> count:', results[0].total);
-    const total = results[0].total;
+    // const total = results[0].total;
 
     // 總共有幾頁
-    const perPage = 6; // 一頁有六筆
-    const totalPage = Math.ceil(total / perPage);
+    // const perPage = 6; // 一頁有六筆
+    // const totalPage = Math.ceil(total / perPage);
 
     // 計算 offset, limit (一頁有幾筆)
-    const limit = perPage;
-    const offset = perPage * (page - 1);
+    // const limit = perPage;
+    // const offset = perPage * (page - 1);
 
-    // 根據 offset, limit 去取得資料
-
-    let sql = 'SELECT * FROM space WHERE 1=1'
-    if(req.query.space_area){
-        sql += ' WHERE space_area = ?'
-        params.push(req.query.space_area);
-    }
     
+    // let sql = 'SELECT * FROM space WHERE 1=1'
+    // if(req.query.space_area){
+    //     sql += ' WHERE space_area = ?'
+    //     params.push(req.query.space_area);
+    // }
+    
+    // 根據 offset, limit 去取得資料
     // const perPage = 6; // 一頁有六筆
     // const totalPage = Math.ceil(total / perPage);
     // const limit = perPage;
     // const offset = perPage * (page - 1);
     
     // sql += ' LIMIT ? OFFSET ?'
-
     // let [data] = await pool.execute(sql, params);
 
-    let [data] = await pool.execute('SELECT * FROM space ORDER BY space_id LIMIT ? OFFSET ?', [limit, offset]);
-    // let [data] = await pool.query('SELECT * FROM space');
+    // let [data] = await pool.execute('SELECT * FROM space ORDER BY space_id LIMIT ? OFFSET ?', [limit, offset]);
+    let [data] = await pool.query('SELECT * FROM space');
 
-    res.json({
-      pagination: {
-        total,
-        perPage,
-        totalPage,
-        page,
-      },
+    res.json(
+      // pagination: {
+      //   total,
+      //   perPage,
+      //   totalPage,
+      //   page,
+      // },
       data,
-    });
+    );
   });
   
   app.get('/space/:spaceId', async (req, res, next) => {
