@@ -3,103 +3,105 @@ import { Link } from 'react-router-dom'
 import './space.css'
 import Dropdown from 'react-bootstrap/Dropdown'
 // import Pagination from 'react-bootstrap/Pagination';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import Button from 'react-bootstrap/Button';
+import 'bootstrap/dist/css/bootstrap.min.css'
+import Button from 'react-bootstrap/Button'
 import { TbArrowsSort } from 'react-icons/tb'
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import axios from 'axios'
+import { useEffect, useState } from 'react'
 import Pagination from './Pagination'
 
 function Space() {
+  const [space, setSpace] = useState([])
+  const [originalSpace, setOriginalSpace] = useState([])
+  //select值
+  const [selectedLocation, setSelectedLocation] = useState('')
+  const [selectedDays, setSelectedDays] = useState([])
 
-  // 為了處理網址
-  // let navigate = useNavigate();
-  // const { currentPage } = useParams();
-  // const [page, setPage] = useState(parseInt(currentPage, 10) || 1); // 目前在哪一頁
-  // const [totalPage, setTotalPage] = useState(); // 總共有幾頁
-
-  const [space, setSpace] = useState([]);
-  //space初始值
-  const [originalSpace, setOriginalSpace] = useState([]);
-  //select顯示在頁面的值
-  const [selectedLocation, setSelectedLocation] = useState('');
-  const [selectedDays, setSelectedDays] = useState([]);
-
-  //清除鍵
+  //清除選擇鍵
   const handleClear = () => {
     //清空初始值
-    setSpace(originalSpace);
-    console.log(originalSpace);
+    setSpace(originalSpace)
+    console.log(originalSpace)
     //清空地點
-    setSelectedLocation('');
+    setSelectedLocation('')
     //清空時間
-    setSelectedDays([]);
+    setSelectedDays([])
   }
-
 
   const [currentPage, setCurrentPage] = useState(1)
   const [postsPerPage, setPostPerPage] = useState(6)
   const lastPostIndex = currentPage * postsPerPage
   const firstPostIndex = lastPostIndex - postsPerPage
   const currentPosts = space.slice(firstPostIndex, lastPostIndex)
-
-
- 
-
-const handlePageClick = (data) => {
-  setCurrentPage(data.selected);
-};
-  useEffect(() => {
-    console.log('空陣列的 useEffect');
-  }, []);
+  const pages = Math.ceil(space.length / postsPerPage)
+  // console.log(currentPage,space.length,pages)
 
   useEffect(() => {
-    // console.log('第二個參數是空陣列');
-    // 在 component 初始化的時候跑一次
-    // 通常會把去跟後端要資料的動作放在這裡
+    console.log('空陣列的 useEffect')
+  }, [])
+
+  useEffect(() => {
+    // 在 component 初始化的時候跑一次，後端要資料的動作放在這裡
     async function getSpace() {
-      let response = await axios.get(`http://localhost:3001/space`);
-      setSpace(response.data);
-      console.log(response.data);
-      setOriginalSpace(response.data);
+      let response = await axios.get(`http://localhost:3001/space`)
+      setSpace(response.data)
+      console.log(response.data)
+      setOriginalSpace(response.data)
     }
-    getSpace();
-  }, []);
+    getSpace()
+  }, [])
 
-  //由新至舊
+  //由新至舊按鈕
   const handleSort = () => {
-    const sorted = [...space].sort((a, b) => b.space_id - a.space_id);
-    setSpace(sorted);
+    const sorted = [...space].sort((a, b) => b.space_id - a.space_id)
+    setSpace(sorted)
   }
 
+  //選擇地點&時間
   const handleClick = (value, type) => {
     //先設定一個filter(符合條件的新陣列)值
-    let filtered;
+    let filtered = [...originalSpace]
     if (type === 'location') {
       // 處理地點選項
-      const space_area = value;
-      setSpace(originalSpace); // 設置回初始值
-      // console.log('初始值：', originalSpace);
-      filtered = originalSpace.filter(space => space.space_area === space_area);
-      setSpace(filtered);
-      setSelectedLocation(value);
-      console.log(filtered);
+      const space_area = value
+      filtered = filtered.filter((space) => space.space_area === space_area)
+      setSpace(filtered)
+      setSelectedLocation(value)
+      console.log(filtered)
       console.log('地點選項：', value)
     }
+
     if (type === 'day') {
       // 處理營業時間選項
       const space_day = value
-      filtered = space.filter(space => space.on_weekdays.includes(space_day));
-      setSpace(filtered);
       // setSelectedDays([...selectedDays, value]);
-      //營業時間的陣列(重複不出現)
+      //營業時間的陣列newSelectedDays=["週三", "週四", "週一"]
+      let newSelectedDays = [...selectedDays]
+
       if (selectedDays.includes(space_day)) {
-        setSelectedDays(selectedDays.filter(d => d !== space_day));
+        newSelectedDays = selectedDays.filter((d) => d !== space_day)
+        setSelectedDays(selectedDays.filter((d) => d !== space_day))
       } else {
-        setSelectedDays([...selectedDays, space_day]);
+        newSelectedDays = [...selectedDays, space_day]
+        setSelectedDays([...selectedDays, space_day])
       }
-      console.log(filtered);
-      console.log('營業時間選項：', value)
+
+      //filtered = filtered.filter((space) => space.on_weekdays.includes(space_day))
+      //newSelectedDays=["週三", "週四", "週一"]
+      //space.on_weekdays= "週一,週二,週三,週四,週五"
+
+      const newFiltered = filtered.filter((space, i) => {
+        let found = false
+        for (let i = 0; i < newSelectedDays.length; i++) {
+          if (space.on_weekdays.includes(newSelectedDays[i])) {
+            found = true
+            break
+          }
+        }
+        return found
+      })
+      setSpace(newFiltered)
+      console.log(filtered.length, newSelectedDays, newFiltered.length)
     }
   }
 
@@ -121,40 +123,6 @@ const handlePageClick = (data) => {
   //   console.log(filtered);
   //   setSpace(filtered);
   // }
-
-  // const getPages = () => {
-  //   let pages = [];
-  //   for (let i = 1; i <= totalPage; i++) {
-  //     pages.push(
-  //       <li
-  //         style={{
-  //           display: 'inline-block',
-  //           margin: '2px',
-  //           backgroundColor: 'black',
-  //           borderColor: page === i ? '#00d1b2' : '#dbdbdb',
-  //           color: page === i ? '#fff' : '#363636',
-  //           borderWidth: '1px',
-  //           width: '28px',
-  //           height: '28px',
-  //           borderRadius: '3px',
-  //           textAlign: 'center',
-  //         }}
-  //         key={i}
-  //         onClick={(e) => {
-  //           setPage(i);
-  //           // 處理網址
-  //           navigate(`/space?page=${i}`);
-  //         }}
-  //       >
-  //         {i}
-  //       </li>
-  //     );
-  //   }
-  //   return pages;
-  // };
-
-
-  
   return (
     <>
       <header>
@@ -168,7 +136,7 @@ const handlePageClick = (data) => {
             <h3>空間分類</h3>
             <hr />
             <Dropdown>
-              <Dropdown.Toggle variant="--color-bg" style={{ border: "none" }} >
+              <Dropdown.Toggle variant="--color-bg" style={{ border: 'none' }}>
                 依地點 {selectedLocation}
               </Dropdown.Toggle>
               <Dropdown.Menu>
@@ -196,22 +164,24 @@ const handlePageClick = (data) => {
             <Dropdown>
               <Dropdown.Toggle
                 variant="--color-bg"
-                style={{ border: "none" }} 
+                style={{ border: 'none' }}
                 id="dropdown-basic"
               >
-                依營業時間 
+                依營業時間
               </Dropdown.Toggle>
               <br />
               {selectedDays.join(', ')}
               <Dropdown.Menu>
-                {['週一', '週二', '週三', '週四', '週五', '週六', '週日'].map(day => (
+                {['週一', '週二', '週三', '週四', '週五', '週六', '週日'].map(
+                  (day) => (
                     <Dropdown.Item
                       value={day}
                       onClick={() => handleClick(day, 'day')}
                     >
                       {day}
                     </Dropdown.Item>
-                 ))}
+                  )
+                )}
               </Dropdown.Menu>
             </Dropdown>
             {/* 為上面 Dropdown的展開
@@ -234,7 +204,9 @@ const handlePageClick = (data) => {
                 <Dropdown.Item value="週日" onClick={() => handleClick('週日', 'day')}>週日</Dropdown.Item>
               </Dropdown.Menu>
                 </Dropdown> */}
-            <Button className="mt-4" variant="dark" onClick={handleClear}>Clear</Button>
+            <Button className="mt-4" variant="dark" onClick={handleClear}>
+              Clear
+            </Button>
           </nav>
           <main>
             <div className="d-md-flex justify-content-between m-2 space__main__header">
@@ -261,7 +233,7 @@ const handlePageClick = (data) => {
             <div className="container space__main-card mt-5">
               <div className="row align-items-start">
                 {currentPosts.map((space_data, index) => {
-                  return(
+                  return (
                     <div
                       key={space_data.space_id}
                       className="col space__main-card-item"
@@ -277,27 +249,57 @@ const handlePageClick = (data) => {
                         <h6>{space_data.space_address}</h6>
                       </Link>
                     </div>
-                  );
+                  )
                 })}
               </div>
             </div>
-            <Pagination className="space__page-item "
-        totalPosts={space.length}
-        postsPerPage={postsPerPage}
-        setCurrentPage={setCurrentPage}
-      />
-            <div>
-              {/* <Pagination className="space__page-item justify-content-center mt-4"
+            <div className="d-flex justify-content-center">
+              <button
+                style={{
+                  display: 'inline-block',
+                  margin: '2px',
+                  backgroundColor: 'black',
+                  borderColor: '#dbdbdb',
+                  color: 'white',
+                  borderWidth: '1px',
+                  width: '40px',
+                  height: '30px',
+                  borderRadius: '3px',
+                  textAlign: 'center',
+                }}
+                onClick={() => {
+                  setCurrentPage(currentPage - 1)
+                }}
+                disabled={currentPage === 1}
               >
-                <Pagination.First />
-                <Pagination.Prev />
-                <Pagination.Item>{1}</Pagination.Item>
-                <Pagination.Item>{2}</Pagination.Item>
-                <Pagination.Item>{3}</Pagination.Item>
-                <Pagination.Next />
-                <Pagination.Last />
-              </Pagination> */}
-              
+                {'<<'}
+              </button>
+              <Pagination
+                className="space__page-item "
+                totalPosts={space.length}
+                postsPerPage={postsPerPage}
+                setCurrentPage={setCurrentPage}
+              />
+              <button
+                style={{
+                  display: 'inline-block',
+                  margin: '2px',
+                  backgroundColor: 'black',
+                  borderColor: '#dbdbdb',
+                  color: 'white',
+                  borderWidth: '1px',
+                  width: '40px',
+                  height: '30px',
+                  borderRadius: '3px',
+                  textAlign: 'center',
+                }}
+                onClick={() => {
+                  setCurrentPage(currentPage + 1)
+                }}
+                disabled={currentPage >= pages}
+              >
+                {'>>'}
+              </button>
             </div>
           </main>
         </div>
