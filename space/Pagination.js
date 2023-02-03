@@ -7,8 +7,15 @@ const Pagination = ({
 }) => {
   let pages = []
   for (let i = 1; i <= Math.ceil(totalPosts / postsPerPage); i++) {
-    pages.push(i)
-  }
+    // console.log(currentPage)
+    // if (
+    //   i === 1 ||
+    //   i === Math.ceil(totalPosts / postsPerPage) ||
+    //   (i >= currentPage - 1 && i <= currentPage + 1)
+    // ) {
+      pages.push(i)
+    }
+  // }
   return (
     <div className="page">
       {pages.map((v, i) => {

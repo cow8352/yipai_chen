@@ -45,7 +45,7 @@ function SpaceDetail() {
                   src={item.space_img_file}
                   alt="aside-1"
                 /> */}
-                <Carousel className="space__aside">
+                <Carousel autoPlay className="space__aside">
                   <div>
                     <img src={item.space_img_file} />
                   </div>
