@@ -35,7 +35,7 @@
 ._register_buyerbox {
     position: absolute;
     width: 32em;
-    height: 40em;
+    /* height: 43em; */
     top: calc(50% - 20em);
     left: calc(50% - 16em);
     background-color: var(--color-text);
@@ -66,8 +66,8 @@
     border: 0em;
     width: 15em;
     height: 3em;
-    margin-top: 2em;
-    margin-bottom: 0.5em;
+    margin-top: 3em;
+    margin-bottom: 2em;
     font-size: var(--text-h2);
 }
 ._register_headIcon {
