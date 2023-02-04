@@ -1,21 +1,20 @@
 import React from 'react'
 import './register.css'
-import axios from 'axios'
 import { useEffect, useState } from 'react'
+import axios from 'axios'
 
 // import { Link } from "react-router-dom";
 // import HeadImg from "../HeadImg";
 import { FaUserCircle } from 'react-icons/fa'
-import { display } from '@mui/system'
 // import { height } from "@mui/system";
 
 const Register = () => {
   const [member, setMember] = useState({
     // 自動填入
-    // name: 'Cola',
-    // account: 'cola00981',
-    // password: '00000000',
-    // confirmPassword: '00000000',
+    name: 'Cola',
+    account: 'cola00981',
+    password: '00000000',
+    confirmPassword: '00000000',
   })
   const [users, setUsers] = useState([])
   useEffect(() => {
@@ -23,8 +22,6 @@ const Register = () => {
     async function getUsers() {
       let response = await axios.get(`http://localhost:3001/users`)
       setUsers(response.data)
-      //   console.log(response.data)
-      //   setOriginalSpace(response.data)
     }
     getUsers()
   }, [])
@@ -36,12 +33,12 @@ const Register = () => {
     newMember[e.target.name] = e.target.value
     setMember(newMember)
     // setMember({ ...member, [e.target.name]: e.target.value });
-    // console.log(newMember.name)
     validateForm()
 
     function validateForm() {
       //避免submit值false後，修改內容
       document.getElementById('submit_button').disabled = true
+      
       //註冊文字檢查
       document.getElementById('error_username').innerText =
         newMember.name !== '' ? '' : '請輸入文字'
@@ -96,9 +93,10 @@ const Register = () => {
         document.getElementById('error_password2').innerText === ''
       ) {
         document.getElementById('submit_button').disabled = false
-      } 
+      }
     }
   }
+
   // 上傳圖片用
   // function handleUpload(e) {
   //     // file input 的值並不是存在 value 欄位裡，是在member裡
@@ -189,11 +187,10 @@ const Register = () => {
                 style={{ color: 'red', display: 'block' }}
               ></span>
               <button
+                id='submit_button'
                 type="submit"
-                id="submit_button"
                 className="_register_btn"
                 onClick={handleSubmit}
-                disabled
               >
                 註冊
               </button>
