@@ -11,10 +11,10 @@ import { FaUserCircle } from 'react-icons/fa'
 const SellRegister = () => {
   const [member, setMember] = useState({
     // 自動填入
-    name: 'Arar',
-    account: 'arar00981',
-    password: '00000000',
-    confirmPassword: '00000000',
+    name: '',
+    account: '',
+    password: '',
+    confirmPassword: '',
   })
   //為了比對帳號是否重複，先撈一次會員資料
   const [users, setUsers] = useState([])
@@ -42,7 +42,7 @@ const SellRegister = () => {
 
       //註冊文字檢查
       document.getElementById('error_username').innerText =
-        newMember.name !== '' ? '' : '請輸入文字'
+        newMember.name !== '' ? '' : '請輸入名字'
 
       //註冊帳號檢查
       let checkccounts = users.some(
@@ -53,21 +53,21 @@ const SellRegister = () => {
         console.log('Account already exists.')
       } else {
         if (newMember.account === '') {
-          document.getElementById('error_account').innerText = '請輸入帳號'
+          document.getElementById('error_account').innerText = '請設定帳號'
         } else if (
-          newMember.account.length >= 8 &&
-          newMember.account.length <= 12
+          newMember.account.length >= 4 &&
+          newMember.account.length <= 25
         ) {
           document.getElementById('error_account').innerText = ''
         } else {
           document.getElementById('error_account').innerText =
-            '帳號需介於 8 到 12 字元'
+            '帳號需介於 4 到 25 字元'
         }
       }
 
       //註冊密碼檢查
       if (newMember.password === '') {
-        document.getElementById('error_password').innerText = '請輸入密碼'
+        document.getElementById('error_password').innerText = '請設定密碼'
       } else if (
         newMember.password.length >= 8 &&
         newMember.password.length <= 12
@@ -79,7 +79,7 @@ const SellRegister = () => {
       }
       //註冊密碼再次檢查
       if (newMember.password2 === '') {
-        document.getElementById('error_password2').innerText = '請輸入密碼'
+        document.getElementById('error_password2').innerText = '請再次確認密碼'
       } else {
         document.getElementById('error_password2').innerText =
           newMember.confirmPassword === newMember.password
