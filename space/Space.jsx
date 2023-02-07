@@ -13,6 +13,9 @@ import Pagination from './Pagination'
 function Space() {
   const [space, setSpace] = useState([])
   const [originalSpace, setOriginalSpace] = useState([])
+  //select值
+  const [selectedLocation, setSelectedLocation] = useState('')
+  const [selectedDays, setSelectedDays] = useState([])
 
   //清除選擇鍵
   const handleClear = () => {
@@ -54,25 +57,20 @@ function Space() {
     setSpace(sorted)
   }
 
-  //select值
-  const [selectedLocation, setSelectedLocation] = useState('')
-  const [selectedDays, setSelectedDays] = useState([])
-
   //選擇地點&時間
   const handleClick = (value, type) => {
-    setCurrentPage(1)
     //先設定一個filter(符合條件的新陣列)值
     let filtered = [...originalSpace]
     if (type === 'location') {
       // 處理地點選項
-      // const space_area = value
-      filtered = filtered.filter((space) => space.space_area === value)
-      // setSpace(filtered)
+      const space_area = value
+      filtered = filtered.filter((space) => space.space_area === space_area)
+      setSpace(filtered)
       setSelectedLocation(value)
       console.log(filtered)
       console.log('地點選項：', value)
-      console.log(selectedDays)
     }
+
     if (type === 'day') {
       // 處理營業時間選項
       const space_day = value
@@ -94,29 +92,37 @@ function Space() {
 
       const newFiltered = filtered.filter((space, i) => {
         let found = false
-        if (!selectedLocation || space.space_area === selectedLocation) {
-          for (let i = 0; i < newSelectedDays.length; i++) {
-            if (space.on_weekdays.includes(newSelectedDays[i])) {
-              found = true
-              break
-            }
+        for (let i = 0; i < newSelectedDays.length; i++) {
+          if (space.on_weekdays.includes(newSelectedDays[i])) {
+            found = true
+            break
           }
         }
         return found
       })
       setSpace(newFiltered)
-      console.log(
-        filtered.length,
-        newSelectedDays,
-        newFiltered.length,
-        selectedLocation
-      )
-      filtered = newFiltered
+      console.log(filtered.length, newSelectedDays, newFiltered.length)
     }
-    // setSpace(filtered)
-    // console.log(filtered)
   }
 
+  // function handleClick(e) {
+  //   // e.preventDefault();
+  //   const space_area = e.target.innerText;
+  //   console.log(space_area);
+  //   let filtered;
+  //   if (space_area === "北") {
+  //       filtered = space.filter(space => space.space_area === "北");
+  //   } else if (space_area === "中") {
+  //       filtered = space.filter(space => space.space_area === "中");
+  //   } else if (space_area === "南") {
+  //       filtered = space.filter(space => space.space_area === "南");
+  //   }
+  //   // const filtered = space.filter(space => {
+  //   //     return space.space_area == "北";
+  //   // });
+  //   console.log(filtered);
+  //   setSpace(filtered);
+  // }
   return (
     <>
       <header>
@@ -155,7 +161,6 @@ function Space() {
               </Dropdown.Menu>
             </Dropdown>
             <br />
-
             <Dropdown>
               <Dropdown.Toggle
                 variant="--color-bg"
