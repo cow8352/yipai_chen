@@ -83,6 +83,7 @@ const ProductsDetail = () => {
   const [selectedArtist, setSelectedArtist] = useState([])
   const { productId } = useParams()
   const { artistId } = useParams()
+  const [artistName, setArtistName] = useState([])
 
   useEffect(() => {
     // console.log('第二個參數是空陣列')
@@ -108,12 +109,15 @@ const ProductsDetail = () => {
 
   console.log(artistData)
   console.log(data)
-  const filtered = artistData.filter(
+  let filtered = [...artistData]
+  filtered = filtered.filter(
     (artistData) => artistData.users_name === data[0].artist
   )
   //作者
+  // setArtistName(filtered.data)
   console.log(filtered)
-  console.log(filtered[0].users_name)
+  // setArtistData(filtered)
+  // console.log(filtered[0].users_name)
 
   // useEffect(() => {
   //   const filteredData = artistData.filter((data) => {
@@ -243,38 +247,42 @@ const ProductsDetail = () => {
                 </div>
               </article>
 
-              {/* {filtered.map((filtered, index) => { */}
-              <aside id="ProductsDetail_aside">
-                <div className="ProductsDetail_aside-wrapp">
-                  <div className="ProductsDetail_artistLink">
-                    <div className="col-md-4">
-                      <img
-                        src={artistLink}
-                        className="ProductsDetail_artistPic"
-                        alt="img"
-                      />
-                    </div>
-                    <div className="ProductsDetail_card-body">
-                      <div className="ProductsDetail_card-body-wrap">
-                        <h5 className="ProductsDetail_card-title">
-                          {/* {filtered.users_name} */}
-                          {filtered[0].users_name}
-                        </h5>
-                        <p className="ProductsDetail_card-text">French</p>
-                        <p className="ProductsDetail_Detail-text">
-                          <p className="ProductsDetail_p" align="left">
-                          {filtered[0].users_introduce}
-                            我是林容德，84年次，出生於嘉義縣水上鄉。父親任職於新營長榮鋼鐵品管課課長，母親為財團法人嘉義北回文化藝術基金會董事長助理，我的哥哥畢業於國立交通大學，目前在桃園星宇航空總部工作
-                          </p>
-                        </p>
-                        <button className="ProductsDetail_follow">關注</button>
+              {filtered.map((artistData, index) => {
+                return (
+                  <aside id="ProductsDetail_aside">
+                    <div className="ProductsDetail_aside-wrapp">
+                      <div className="ProductsDetail_artistLink">
+                        <div className="col-md-4">
+                          <img
+                            src={artistLink}
+                            className="ProductsDetail_artistPic"
+                            alt="img"
+                          />
+                        </div>
+                        <div className="ProductsDetail_card-body">
+                          <div className="ProductsDetail_card-body-wrap">
+                            <h5 className="ProductsDetail_card-title">
+                              {artistData.users_name}
+                              {/* {filtered[0].users_name} */}
+                            </h5>
+                            <p className="ProductsDetail_card-text">French</p>
+                            <p className="ProductsDetail_Detail-text">
+                              <p className="ProductsDetail_p" align="left">
+                              {artistData.users_introduce}
+                                {/* {filtered[0].users_introduce} */}
+                                {/* 我是林容德，84年次，出生於嘉義縣水上鄉。父親任職於新營長榮鋼鐵品管課課長，母親為財團法人嘉義北回文化藝術基金會董事長助理，我的哥哥畢業於國立交通大學，目前在桃園星宇航空總部工作 */}
+                              </p>
+                            </p>
+                            <button className="ProductsDetail_follow">
+                              關注
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </aside>
-              {/* }) */}
-              {/* } */}
+                  </aside>
+                )
+              })}
 
               <main id="ProductsDetail_main">
                 <div className="ProductsDetail_main-wrap">
