@@ -32,10 +32,10 @@ function SpaceDetail() {
 
   // const [state, setState] = useState([])
   // useEffect(() => {
-    // 連接資料庫
-    // 設定狀態
-    // console.log('didmount')
-    // setState(demoDataFromServer)
+  // 連接資料庫
+  // 設定狀態
+  // console.log('didmount')
+  // setState(demoDataFromServer)
   // }, [])
 
   useEffect(() => {
@@ -111,7 +111,9 @@ function SpaceDetail() {
                       {item.space_tel}
                     </div>
                     <div>
-                      <h6>{item.space_introduction}</h6>
+                      <h6 className="space__detail__h6">
+                        {item.space_introduction}
+                      </h6>
                     </div>
                     <br />
                     <div className="space__icon">
@@ -131,35 +133,31 @@ function SpaceDetail() {
                   </div>
                 </div>
                 <div>
-                  <div>
-                    {/* <img
-                      className="space__detail-map-img"
-                      src={require('./map.png')}
-                      alt="map"
-                      style={{ width: '100%' }}
-                    /> */}
-                    <LeafletMap
-                      center={[item.space_lat, item.space_lng]}
-                      zoom={22}
-                      style={{ height: '50vh', width: '80vh' }}
+                  <LeafletMap
+                    center={[item.space_lat, item.space_lng]}
+                    zoom={22}
+                    style={{
+                      height: '50vh',
+                      width: '45vw',
+                    }}
+                    className="space__map"
+                  >
+                    <TileLayer
+                      attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                      url="https://{s}.tile.osm.org/{z}/{x}/{y}.png"
+                    />
+                    {/* {state.map(({ lat, lng }, index) => ( */}
+                    <Marker
+                      position={[item.space_lat, item.space_lng]}
+                      icon={customMarker}
+                      // key={index}
                     >
-                      <TileLayer
-                        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                        url="https://{s}.tile.osm.org/{z}/{x}/{y}.png"
-                      />
-                      {/* {state.map(({ lat, lng }, index) => ( */}
-                        <Marker
-                          position={[item.space_lat, item.space_lng]}
-                          icon={customMarker}
-                          // key={index}
-                        >
-                          {/* <Popup>
+                      {/* <Popup>
                           {index + 1} is for popup with lat: {lat} and lon {lng}
                         </Popup> */}
-                        </Marker>
-                      {/* ))} */}
-                    </LeafletMap>
-                  </div>
+                    </Marker>
+                    {/* ))} */}
+                  </LeafletMap>
                 </div>
               </div>
             </>
