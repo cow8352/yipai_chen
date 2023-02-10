@@ -95,22 +95,22 @@ function SellerHome() {
       .then((response) => console.log(response))
       .catch((error) => console.error(error))
   }
-  // console.log(UserOldDatas);
-  // console.log(UserOrders);
+  //   console.log(UserOldDatas)
+  //   console.log(UserOrders)
 
   //  記錄輸入的產品
   const [productInputData, setProductInputData] = useState({
     name: '',
     photo: '',
     width: '',
-    hegiht: '',
+    height: '',
     material: '',
-    product_style: '',
-    artist:'',
-    creation_year:'',
-    work_hue:'',
-    price:'',
-    detail_text:'',
+    style: '',
+    artist: '',
+    creation_year: '',
+    work_hue: '',
+    price: '',
+    detail_text: '',
   })
   // 每次輸入後更新產品資料
   useEffect(() => {
@@ -138,6 +138,15 @@ function SellerHome() {
     let formData = new FormData()
     formData.append('name', productInputData.name)
     formData.append('photo', productInputData.photo)
+    formData.append('width', productInputData.width)
+    formData.append('height', productInputData.height)
+    formData.append('material', productInputData.material)
+    formData.append('style', productInputData.style)
+    formData.append('artist', productInputData.artist)
+    formData.append('creation_year', productInputData.creation_year)
+    formData.append('work_hue', productInputData.work_hue)
+    formData.append('price', productInputData.price)
+    formData.append('detail_text', productInputData.detail_text)
     let response = await axios.post(
       'http://localhost:3001/product',
       formData
@@ -162,21 +171,20 @@ function SellerHome() {
   function testBtn() {
     console.log(productInputData.photo)
   }
+
   return (
     <>
       <div className="d-flex">
-        <div className="sellerhome__main">
+        <div className="sellerhome__main" id="sellerhome__main">
           <div id="SellerFrontPage" style={{ display: 'block' }}>
             <div className="SellerFrontPage__main__section__news">
               <h2>最新消息</h2>
-              <p>
-                這是第一則重要消息！！看的到代表一切正常不用擔心，看不到代表要去客服反應！
-              </p>
+              <p>這是第一則重要消息！！看的到代表一切正常不用擔心！</p>
             </div>
             <div className="SellerFrontPage__main__section__todolist">
               <h2>待辦事項</h2>
               <div>
-                <ul className="list-unstyled">
+                <ul className="SellerFrontPage__status list-unstyled">
                   <li>
                     {/* <Link to={`/about`} ></Link> */}
                     <h1>0</h1>
@@ -209,7 +217,7 @@ function SellerHome() {
           </div>
           <div id="SellerPage" style={{ display: 'none' }}>
             <div className="sellerpage">
-              <div className="sellerpage__title">藝術家資訊</div>
+              <div className="sellerpage__title mb-0">藝術家資訊</div>
               <div className="sellerpage__main">
                 <form
                   className="sellerpage__main__left"
@@ -258,10 +266,11 @@ function SellerHome() {
                   <p>畫廊介紹</p>
                   <textarea
                     style={{
-                      width: '250px',
+                      width: '350px',
                       height: '350px',
                       backgroundColor: '#F9F7F2',
                       border: 'none',
+                      padding: '10px',
                     }}
                     value={UserInputData.username}
                     onChange={handleChange2}
@@ -278,9 +287,6 @@ function SellerHome() {
             <div className="SellerUpload">
               <div className="SellerUpload__upload">
                 <div>
-                  <button className="" onClick={testBtn}>
-                    test
-                  </button>
                   <label className="SellerUpload__uploadIcon">
                     {/* 增加檔案 */}
                     <input
@@ -293,7 +299,7 @@ function SellerHome() {
                   </label>
                 </div>
               </div>
-              <div className="d-flex">
+              <div className="SellerUpload__detail">
                 <div className="SellerUpload__name">
                   <div
                     style={{
@@ -324,7 +330,7 @@ function SellerHome() {
                       <p>商品介紹:</p>
                       <textarea
                         type="text"
-                        name="introduce"
+                        name="detail_text"
                         value={productInputData.introduce}
                         onChange={handleProductChange}
                         required
@@ -366,21 +372,10 @@ function SellerHome() {
                         }}
                       />
                     </div>
-                    {/* <div className="SellerUpload__money__input">
-                      <p>付款方式:</p>
-                      <input
-                        type="text"
-                        value=""
-                        style={{
-                          border: 'none',
-                          width: '140px',
-                        }}
-                      />
-                    </div> */}
                   </div>
                 </div>
               </div>
-              <div className="d-flex">
+              <div className="SellerUpload__product">
                 <div className="SellerUpload__kind">
                   <div
                     style={{
@@ -400,15 +395,14 @@ function SellerHome() {
                     <div className="SellerUpload__kind__left">
                       <div className="SellerUpload__kind__select">
                         <p>作品年份:</p>
-
                         <input
-                        type="text"
-                        name="creation_year"
-                        value={productInputData.creation_year}
-                        onChange={handleProductChange}
-                        required
-                        style={{ border: 'none', width: '100px' }}
-                      />
+                          type="text"
+                          name="creation_year"
+                          value={productInputData.creation_year}
+                          onChange={handleProductChange}
+                          required
+                          style={{ border: 'none', width: '100px' }}
+                        />
                       </div>
                       <div className="SellerUpload__kind__select">
                         <p>作品種類:</p>
@@ -492,9 +486,96 @@ function SellerHome() {
                     </div>
                     <div className="SellerUpload__attributes__select">
                       <p>色系</p>
-                      <div>紅</div>
-                      <div>綠</div>
-                      <div>藍</div>
+                      <tr className="SellerUpload__color">
+                        <table>
+                          <tr>
+                            <td>
+                              <button
+                                className="SellerUpload__color-item SellerUpload__color-item-red"
+                                name="work_hue"
+                                value="Red"
+                                onClick={handleProductChange}
+                              ></button>
+                            </td>
+                            <td>
+                              <button
+                                className="SellerUpload__color-item SellerUpload__color-item-ori"
+                                name="work_hue"
+                                value="Orange"
+                                onClick={handleProductChange}
+                              ></button>
+                            </td>
+                            <td>
+                              <button
+                                className="SellerUpload__color-item SellerUpload__color-item-yel"
+                                name="work_hue"
+                                value="Yellow"
+                                onClick={handleProductChange}
+                              ></button>
+                            </td>
+                            <td>
+                              <button
+                                className="SellerUpload__color-item SellerUpload__color-item-gre"
+                                name="work_hue"
+                                value="Green"
+                                onClick={handleProductChange}
+                              ></button>
+                            </td>
+                            <td>
+                              <button
+                                className="SellerUpload__color-item SellerUpload__color-item-blu"
+                                name="work_hue"
+                                value="Blue"
+                                onClick={handleProductChange}
+                              ></button>
+                            </td>
+
+                            <td>
+                              <button
+                                className="SellerUpload__color-item SellerUpload__color-item-pur"
+                                name="work_hue"
+                                value="Purple"
+                                onClick={handleProductChange}
+                              ></button>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <button
+                                className="SellerUpload__color-item SellerUpload__color-item-bro"
+                                name="work_hue"
+                                value="Brown"
+                                onClick={handleProductChange}
+                              ></button>
+                            </td>
+                            <td>
+                              <button
+                                className="SellerUpload__color-item SellerUpload__color-item-whi"
+                                name="work_hue"
+                                value="White"
+                                onClick={handleProductChange}
+                              ></button>
+                            </td>
+
+                            <td>
+                              <button
+                                className="SellerUpload__color-item SellerUpload__color-item-gra"
+                                name="work_hue"
+                                value="Gray"
+                                onClick={handleProductChange}
+                              ></button>
+                            </td>
+                            <td>
+                              <button
+                                className="SellerUpload__color-item SellerUpload__color-item-bla"
+                                name="work_hue"
+                                value="Black"
+                                onClick={handleProductChange}
+                              ></button>
+                            </td>
+                          </tr>
+                        </table>
+                      </tr>
                     </div>
                   </div>
                 </div>
@@ -508,158 +589,150 @@ function SellerHome() {
             </div>
           </div>
           <div id="SellerProduct" style={{ display: 'none' }}>
-            <section id="SellerProduct__section">
-              <nav id="SellerProduct__nav">
+            <section id="SellerProduct__section ">
+              <nav id="SellerProduct__nav d-flex">
                 <h1 className="SellerProduct__total">共有26件</h1>
+                <Button className="SellerProduct__aside_add" variant="dark">
+                  新增商品+
+                </Button>
+
+                <div className="SellerProduct__aside-list">
+                  <Button className="SellerProduct__aside-sort" variant="dark">
+                    排序
+                  </Button>
+                </div>
               </nav>
-              <aside id="SellerProduct__aside">
-                <ul className="SellerProduct__aside-list">
-                  <li className="SellerProduct__aside-li">
-                    <div className="SellerProduct__aside-searchBar">
-                      <RiSearch2Line
-                        className="SellerProduct__aside-searchBar-icon"
-                        style={{
-                          width: '40px',
-                          height: '40px',
-                        }}
-                      />
-                    </div>
-                  </li>
-                  <li className="SellerProduct__aside-li">
-                    <Button variant="dark">新增商品+</Button>
-                  </li>
-                  <li className="SellerProduct__aside-li">
-                    <Button variant="dark">排序</Button>
-                  </li>
-                </ul>
-              </aside>
               <main id="SellerProduct__main">
-                <table className="SellerProduct＿main">
-                  <tr className=" SellerProduct__other-product">
-                    <td>
-                      <img
-                        className="SellerProduct__card-img-top"
-                        src="https://sh-cdn.singulart.com/eyJidWNrZXQiOiJzaW5ndWxhcnQtd2Vic2l0ZS1wcm9kIiwia2V5IjoiYXJ0d29ya3NcL3YyXC9jcm9wcGVkXC8zMjA5XC9tYWluXC96b29tXC8zMTU0NzdfZGY4ZjEyMjI4MzlmZDE4MWY4N2ZjYmI3ZmQyNmM2NTkuanBlZyIsImVkaXRzIjp7InJlc2l6ZSI6eyJ3aWR0aCI6NzUwLCJoZWlnaHQiOjc1MCwiZml0IjoiaW5zaWRlIn0sInRvRm9ybWF0Ijoid2VicCIsIndlYnAiOnsicXVhbGl0eSI6ODB9fX0=?signature=8801d203789aa1e99e51ff76f768a15bd51149a7b3e4cc942db977b937fe671e"
-                      />
-                      <div className="SellerProduct__card-text">
-                        <h5 className="SellerProduct__productId">
-                          品名品名品名品名品名品名品名品名品名品名品名品名
-                        </h5>
-                        <p className="SellerProduct__article">
-                          作者作者作者作者
-                        </p>
-                        <p className="SellerProduct__price">$16900</p>
-                      </div>
-                    </td>
-                    <td>
-                      <img
-                        className="SellerProduct__card-img-top"
-                        src="https://sh-cdn.singulart.com/eyJidWNrZXQiOiJzaW5ndWxhcnQtd2Vic2l0ZS1wcm9kIiwia2V5IjoiYXJ0d29ya3NcL3YyXC9jcm9wcGVkXC8xOTQxNVwvbWFpblwvem9vbVwvODg3OTQxXzYwNzNhNjU4MzcyZTFiNTY2MzVlNTVlZDRhZjBlNTFmLmpwZWciLCJlZGl0cyI6eyJyZXNpemUiOnsid2lkdGgiOjc1MCwiaGVpZ2h0Ijo3NTAsImZpdCI6Imluc2lkZSJ9LCJ0b0Zvcm1hdCI6IndlYnAiLCJ3ZWJwIjp7InF1YWxpdHkiOjgwfX19?signature=afb4f906096d0f37c64b83457e1f8c52b3b75c6f0494b03efa5684e8356086cc"
-                      />
-                      <div className="SellerProduct__card-text">
-                        <h5 className="SellerProduct__productId">
-                          品名品名品名品名品名品名品名品名品名品名品名品名
-                        </h5>
-                        <p className="SellerProduct__article">
-                          作者作者作者作者
-                        </p>
-                        <p className="SellerProduct__price">$16900</p>
-                      </div>
-                    </td>
-                    <td>
+                <div class="SellerProduct__main_container">
+                  <div className="SellerProduct＿main row align-items-start">
+                    <div className="SellerProduct__item col">
                       <img
                         className="SellerProduct__card-img-top"
                         src="https://sh-cdn.singulart.com/eyJidWNrZXQiOiJzaW5ndWxhcnQtd2Vic2l0ZS1wcm9kIiwia2V5IjoiYXJ0d29ya3NcL3YyXC9jcm9wcGVkXC8xMDgwMVwvbWFpblwvem9vbVwvMTQzOTc5NV85YTU0YjcyZDE0YzdiOTM4MGI2YzFhMWU4OGY2M2UyYS5qcGVnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo3NTAsImhlaWdodCI6NzUwLCJmaXQiOiJpbnNpZGUifSwidG9Gb3JtYXQiOiJ3ZWJwIiwid2VicCI6eyJxdWFsaXR5Ijo4MH19fQ==?signature=3354b764d2ecd526da29327b4a7fd33227b4909b8ea40e6d6c5e46f2700d84b9"
                       />
+
                       <div className="SellerProduct__card-text">
-                        <h5 className="SellerProduct__productId">
-                          品名品名品名品名品名品名品名品名品名品名品名品名
-                        </h5>
+                        <p className="SellerProduct__productId"></p>
                         <p className="SellerProduct__article">
                           作者作者作者作者
                         </p>
                         <p className="SellerProduct__price">$16900</p>
                       </div>
-                    </td>
-                    <td>
-                      <img
-                        className="SellerProduct__card-img-top"
-                        src="https://sh-cdn.singulart.com/eyJidWNrZXQiOiJzaW5ndWxhcnQtd2Vic2l0ZS1wcm9kIiwia2V5IjoiYXJ0d29ya3NcL3YyXC9jcm9wcGVkXC8zMjA5XC9tYWluXC96b29tXC85MDAwOTVfN2FhZWM3ZDc0Mjg0ZDQ1NzgxYWVjOTRhNGE5MzQyY2EuanBlZyIsImVkaXRzIjp7InJlc2l6ZSI6eyJ3aWR0aCI6NzUwLCJoZWlnaHQiOjc1MCwiZml0IjoiaW5zaWRlIn0sInRvRm9ybWF0Ijoid2VicCIsIndlYnAiOnsicXVhbGl0eSI6ODB9fX0=?signature=601f8e5811c653113228a4b0130e66339661804a70b61950cbf718d21e80ffdc"
-                      />
-                      <div className="SellerProduct__card-text">
-                        <h5 className="SellerProduct__productId">
-                          品名品名品名品名品名品名品名品名品名品名品名品名
-                        </h5>
-                        <p className="SellerProduct__article">
-                          作者作者作者作者
-                        </p>
-                        <p className="SellerProduct__price">$16900</p>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr className=" SellerProduct__other-product">
-                    <td>
-                      <img
-                        className="SellerProduct__card-img-top"
-                        src="https://sh-cdn.singulart.com/eyJidWNrZXQiOiJzaW5ndWxhcnQtd2Vic2l0ZS1wcm9kIiwia2V5IjoiYXJ0d29ya3NcL3YyXC9jcm9wcGVkXC8zMjA5XC9tYWluXC96b29tXC8zMTU0NzdfZGY4ZjEyMjI4MzlmZDE4MWY4N2ZjYmI3ZmQyNmM2NTkuanBlZyIsImVkaXRzIjp7InJlc2l6ZSI6eyJ3aWR0aCI6NzUwLCJoZWlnaHQiOjc1MCwiZml0IjoiaW5zaWRlIn0sInRvRm9ybWF0Ijoid2VicCIsIndlYnAiOnsicXVhbGl0eSI6ODB9fX0=?signature=8801d203789aa1e99e51ff76f768a15bd51149a7b3e4cc942db977b937fe671e"
-                      />
-                      <div className="SellerProduct__card-text">
-                        <h5 className="SellerProduct__productId">
-                          品名品名品名品名品名品名品名品名品名品名品名品名
-                        </h5>
-                        <p className="SellerProduct__article">
-                          作者作者作者作者
-                        </p>
-                        <p className="SellerProduct__price">$16900</p>
-                      </div>
-                    </td>
-                    <td>
-                      <img
-                        className="SellerProduct__card-img-top"
-                        src="https://sh-cdn.singulart.com/eyJidWNrZXQiOiJzaW5ndWxhcnQtd2Vic2l0ZS1wcm9kIiwia2V5IjoiYXJ0d29ya3NcL3YyXC9jcm9wcGVkXC8xOTQxNVwvbWFpblwvem9vbVwvODg3OTQxXzYwNzNhNjU4MzcyZTFiNTY2MzVlNTVlZDRhZjBlNTFmLmpwZWciLCJlZGl0cyI6eyJyZXNpemUiOnsid2lkdGgiOjc1MCwiaGVpZ2h0Ijo3NTAsImZpdCI6Imluc2lkZSJ9LCJ0b0Zvcm1hdCI6IndlYnAiLCJ3ZWJwIjp7InF1YWxpdHkiOjgwfX19?signature=afb4f906096d0f37c64b83457e1f8c52b3b75c6f0494b03efa5684e8356086cc"
-                      />
-                      <div className="SellerProduct__card-text">
-                        <h5 className="SellerProduct__productId">
-                          品名品名品名品名品名品名品名品名品名品名品名品名
-                        </h5>
-                        <p className="SellerProduct__article">
-                          作者作者作者作者
-                        </p>
-                        <p className="SellerProduct__price">$16900</p>
-                      </div>
-                    </td>
-                    <td>
+                    </div>
+                    <div className="SellerProduct__item col">
                       <img
                         className="SellerProduct__card-img-top"
                         src="https://sh-cdn.singulart.com/eyJidWNrZXQiOiJzaW5ndWxhcnQtd2Vic2l0ZS1wcm9kIiwia2V5IjoiYXJ0d29ya3NcL3YyXC9jcm9wcGVkXC8zMzA1N1wvbWFpblwvem9vbVwvMTUwMjYxOV83OTI0YWVmNjJjZjYxYmVkNDEzZmIyMTJhOTA2NTI0Mi5qcGVnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo3NTAsImhlaWdodCI6NzUwLCJmaXQiOiJpbnNpZGUifSwidG9Gb3JtYXQiOiJ3ZWJwIiwid2VicCI6eyJxdWFsaXR5Ijo4MH19fQ==?signature=5160b85669a83546d04479b705b9c1aaccbdb3d6e1605ef10ca6d45baabdd6d0"
                       />
+
                       <div className="SellerProduct__card-text">
-                        <h5 className="SellerProduct__productId">
-                          品名品名品名品名品名品名品名品名品名品名品名品名
-                        </h5>
+                        <p className="SellerProduct__productId">
+                          品名品名品名品名
+                        </p>
                         <p className="SellerProduct__article">
                           作者作者作者作者
                         </p>
                         <p className="SellerProduct__price">$16900</p>
                       </div>
-                    </td>
-                    <td>
+                    </div>
+
+                    <div className="SellerProduct__item col">
                       <img
                         className="SellerProduct__card-img-top"
-                        src="https://sh-cdn.singulart.com/eyJidWNrZXQiOiJzaW5ndWxhcnQtd2Vic2l0ZS1wcm9kIiwia2V5IjoiYXJ0d29ya3NcL3BpY3R1cmVzXC9jcm9wcGVkXC8zMjA5XC8yMzI0N1wvem9vbVwvc2VyaWVfMjMyNDdfMDExOTE3NjhjMDVmOWEyZGMxNDJlODEyMjY5N2YwZGYuanBlZyIsImVkaXRzIjp7InJlc2l6ZSI6eyJ3aWR0aCI6NzUwLCJoZWlnaHQiOjc1MCwiZml0IjoiaW5zaWRlIn0sInRvRm9ybWF0Ijoid2VicCIsIndlYnAiOnsicXVhbGl0eSI6ODB9fX0=?signature=2e746e9c9c47e8c7da31754a05c3421c1391396a9ee89444fd8138c4e0e0bb2b"
+                        src="https://sh-cdn.singulart.com/eyJidWNrZXQiOiJzaW5ndWxhcnQtd2Vic2l0ZS1wcm9kIiwia2V5IjoiYXJ0d29ya3NcL3YyXC9jcm9wcGVkXC8xOTQxNVwvbWFpblwvem9vbVwvODg3OTQxXzYwNzNhNjU4MzcyZTFiNTY2MzVlNTVlZDRhZjBlNTFmLmpwZWciLCJlZGl0cyI6eyJyZXNpemUiOnsid2lkdGgiOjc1MCwiaGVpZ2h0Ijo3NTAsImZpdCI6Imluc2lkZSJ9LCJ0b0Zvcm1hdCI6IndlYnAiLCJ3ZWJwIjp7InF1YWxpdHkiOjgwfX19?signature=afb4f906096d0f37c64b83457e1f8c52b3b75c6f0494b03efa5684e8356086cc"
                       />
+
                       <div className="SellerProduct__card-text">
-                        <h5 className="SellerProduct__productId">
-                          品名品名品名品名品名品名品名品名品名品名品名品名
-                        </h5>
+                        <p className="SellerProduct__productId">品名品名品名</p>
                         <p className="SellerProduct__article">
                           作者作者作者作者
                         </p>
                         <p className="SellerProduct__price">$16900</p>
                       </div>
-                    </td>
-                  </tr>
-                </table>
+                    </div>
+
+                    <div className="SellerProduct__item col">
+                      <img
+                        className="SellerProduct__card-img-top"
+                        src="https://sh-cdn.singulart.com/eyJidWNrZXQiOiJzaW5ndWxhcnQtd2Vic2l0ZS1wcm9kIiwia2V5IjoiYXJ0d29ya3NcL3YyXC9jcm9wcGVkXC8zMzA1N1wvbWFpblwvem9vbVwvMTUwMjYxOV83OTI0YWVmNjJjZjYxYmVkNDEzZmIyMTJhOTA2NTI0Mi5qcGVnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo3NTAsImhlaWdodCI6NzUwLCJmaXQiOiJpbnNpZGUifSwidG9Gb3JtYXQiOiJ3ZWJwIiwid2VicCI6eyJxdWFsaXR5Ijo4MH19fQ==?signature=5160b85669a83546d04479b705b9c1aaccbdb3d6e1605ef10ca6d45baabdd6d0"
+                      />
+
+                      <div className="SellerProduct__card-text">
+                        <p className="SellerProduct__productId">
+                          品名品名品名品名
+                        </p>
+                        <p className="SellerProduct__article">
+                          作者作者作者作者
+                        </p>
+                        <p className="SellerProduct__price">$16900</p>
+                      </div>
+                    </div>
+                    <div className="SellerProduct__item col">
+                      <img
+                        className="SellerProduct__card-img-top"
+                        src="https://sh-cdn.singulart.com/eyJidWNrZXQiOiJzaW5ndWxhcnQtd2Vic2l0ZS1wcm9kIiwia2V5IjoiYXJ0d29ya3NcL3YyXC9jcm9wcGVkXC8zMzA1N1wvbWFpblwvem9vbVwvMTUwMjYxOV83OTI0YWVmNjJjZjYxYmVkNDEzZmIyMTJhOTA2NTI0Mi5qcGVnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo3NTAsImhlaWdodCI6NzUwLCJmaXQiOiJpbnNpZGUifSwidG9Gb3JtYXQiOiJ3ZWJwIiwid2VicCI6eyJxdWFsaXR5Ijo4MH19fQ==?signature=5160b85669a83546d04479b705b9c1aaccbdb3d6e1605ef10ca6d45baabdd6d0"
+                      />
+
+                      <div className="SellerProduct__card-text">
+                        <p className="SellerProduct__productId">
+                          品名品名品名品名
+                        </p>
+                        <p className="SellerProduct__article">
+                          作者作者作者作者
+                        </p>
+                        <p className="SellerProduct__price">$16900</p>
+                      </div>
+                    </div>
+                    <div className="SellerProduct__item col">
+                      <img
+                        className="SellerProduct__card-img-top"
+                        src="https://sh-cdn.singulart.com/eyJidWNrZXQiOiJzaW5ndWxhcnQtd2Vic2l0ZS1wcm9kIiwia2V5IjoiYXJ0d29ya3NcL3YyXC9jcm9wcGVkXC8zMzA1N1wvbWFpblwvem9vbVwvMTUwMjYxOV83OTI0YWVmNjJjZjYxYmVkNDEzZmIyMTJhOTA2NTI0Mi5qcGVnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo3NTAsImhlaWdodCI6NzUwLCJmaXQiOiJpbnNpZGUifSwidG9Gb3JtYXQiOiJ3ZWJwIiwid2VicCI6eyJxdWFsaXR5Ijo4MH19fQ==?signature=5160b85669a83546d04479b705b9c1aaccbdb3d6e1605ef10ca6d45baabdd6d0"
+                      />
+
+                      <div className="SellerProduct__card-text">
+                        <p className="SellerProduct__productId">
+                          品名品名品名品名
+                        </p>
+                        <p className="SellerProduct__article">
+                          作者作者作者作者
+                        </p>
+                        <p className="SellerProduct__price">$16900</p>
+                      </div>
+                    </div>
+                    <div className="SellerProduct__item col">
+                      <img
+                        className="SellerProduct__card-img-top"
+                        src="https://sh-cdn.singulart.com/eyJidWNrZXQiOiJzaW5ndWxhcnQtd2Vic2l0ZS1wcm9kIiwia2V5IjoiYXJ0d29ya3NcL3YyXC9jcm9wcGVkXC8zMzA1N1wvbWFpblwvem9vbVwvMTUwMjYxOV83OTI0YWVmNjJjZjYxYmVkNDEzZmIyMTJhOTA2NTI0Mi5qcGVnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo3NTAsImhlaWdodCI6NzUwLCJmaXQiOiJpbnNpZGUifSwidG9Gb3JtYXQiOiJ3ZWJwIiwid2VicCI6eyJxdWFsaXR5Ijo4MH19fQ==?signature=5160b85669a83546d04479b705b9c1aaccbdb3d6e1605ef10ca6d45baabdd6d0"
+                      />
+
+                      <div className="SellerProduct__card-text">
+                        <p className="SellerProduct__productId">
+                          品名品名品名品名
+                        </p>
+                        <p className="SellerProduct__article">
+                          作者作者作者作者
+                        </p>
+                        <p className="SellerProduct__price">$16900</p>
+                      </div>
+                    </div>
+                    <div className="SellerProduct__item col">
+                      <img
+                        className="SellerProduct__card-img-top"
+                        src="https://sh-cdn.singulart.com/eyJidWNrZXQiOiJzaW5ndWxhcnQtd2Vic2l0ZS1wcm9kIiwia2V5IjoiYXJ0d29ya3NcL3YyXC9jcm9wcGVkXC8zMzA1N1wvbWFpblwvem9vbVwvMTUwMjYxOV83OTI0YWVmNjJjZjYxYmVkNDEzZmIyMTJhOTA2NTI0Mi5qcGVnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo3NTAsImhlaWdodCI6NzUwLCJmaXQiOiJpbnNpZGUifSwidG9Gb3JtYXQiOiJ3ZWJwIiwid2VicCI6eyJxdWFsaXR5Ijo4MH19fQ==?signature=5160b85669a83546d04479b705b9c1aaccbdb3d6e1605ef10ca6d45baabdd6d0"
+                      />
+
+                      <div className="SellerProduct__card-text">
+                        <p className="SellerProduct__productId">
+                          品名品名品名品名
+                        </p>
+                        <p className="SellerProduct__article">
+                          作者作者作者作者
+                        </p>
+                        <p className="SellerProduct__price">$16900</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </main>
             </section>
           </div>
@@ -674,7 +747,7 @@ function SellerHome() {
               </div>
             </div>
             <div className="sellerorder__main__table">
-              <table>
+              <table className="sellerorder__main__table_table">
                 <thead>
                   <tr>
                     <th>
@@ -717,7 +790,7 @@ function SellerHome() {
                         <TiArrowSortedDown />
                       </Button>
                     </th>
-                    <th>
+                    <th className="sellerorder__main_detil_count">
                       <Button
                         className=""
                         variant="--color-bg"
@@ -727,7 +800,7 @@ function SellerHome() {
                         <TiArrowSortedDown />
                       </Button>
                     </th>
-                    <th></th>
+                    <th className="sellerorder__main_detil_button"></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -736,8 +809,8 @@ function SellerHome() {
                     <td>未出貨</td>
                     <td>2000</td>
                     <td>2023/01/14</td>
-                    <td>1</td>
-                    <td>
+                    <td className="sellerorder__main_detil_count">1</td>
+                    <td className="sellerorder__main_detil_button">
                       <Button variant="dark">詳細資料</Button>
                     </td>
                   </tr>
@@ -746,8 +819,8 @@ function SellerHome() {
                     <td>未出貨</td>
                     <td>2000</td>
                     <td>2023/01/14</td>
-                    <td>1</td>
-                    <td>
+                    <td className="sellerorder__main_detil_count">1</td>
+                    <td className="sellerorder__main_detil_button">
                       <Button variant="dark">詳細資料</Button>
                     </td>
                   </tr>{' '}
@@ -756,8 +829,8 @@ function SellerHome() {
                     <td>未出貨</td>
                     <td>2000</td>
                     <td>2023/01/14</td>
-                    <td>1</td>
-                    <td>
+                    <td className="sellerorder__main_detil_count">1</td>
+                    <td className="sellerorder__main_detil_button">
                       <Button variant="dark">詳細資料</Button>
                     </td>
                   </tr>
@@ -766,12 +839,23 @@ function SellerHome() {
             </div>
           </div>
         </div>
+        <div className="_sellerhome__pic_414 m-3">
+          <img
+            src={buyerImg}
+            alt="sellerHead"
+            className="_sellerhome_headImg"
+          />
+          <label className="sellerhome__headIcon_414">
+            {/* 增加檔案 */}
+            <input type="file" style={{ display: 'none' }}></input>
+          </label>
+        </div>
         <div className="sellerhome__sidebar">
           <div className="sellerhome__sidebar__center">
             <Link to="/">
-              <img src={logo1} />
+              <img className="sellerhome__sidebar__center_logo" src={logo1} />
             </Link>
-            <div className="_sellerhome__pic m-3">
+            <div className="_sellerhome__pic_1920 m-3">
               <img
                 src={buyerImg}
                 alt="sellerHead"
@@ -782,41 +866,26 @@ function SellerHome() {
                 <input type="file" style={{ display: 'none' }}></input>
               </label>
             </div>
-            <ul className="list-unstyled">
-              <li>
-                <SellerButton
-                  text="首頁"
-                  src={sellerHouseIcon}
-                  onClick={SellerFrontPage}
-                />
+            <ul className="list-unstyled sellerhome__icon ">
+              <li className="d-flex">
+                <SellerButton src={sellerHouseIcon} onClick={SellerFrontPage} />
+                <p className="sellerhome__icon_text">首頁</p>
               </li>
-              <li>
-                <SellerButton
-                  text="個人頁面"
-                  src={sellerpageIcon}
-                  onClick={SellerPage}
-                />
+              <li className="d-flex">
+                <SellerButton src={sellerpageIcon} onClick={SellerPage} />
+                <p className="sellerhome__icon_text">個人頁面</p>
               </li>
-              <li>
-                <SellerButton
-                  text="上架商品"
-                  src={sellerupIcon}
-                  onClick={SellerUpload}
-                />
+              <li className="d-flex">
+                <SellerButton src={sellerupIcon} onClick={SellerUpload} />
+                <p className="sellerhome__icon_text">上架商品</p>
               </li>
-              <li>
-                <SellerButton
-                  text="商品管理"
-                  src={sellerlistIcon}
-                  onClick={SellerProduct}
-                />
+              <li className="d-flex">
+                <SellerButton src={sellerlistIcon} onClick={SellerProduct} />
+                <p className="sellerhome__icon_text">商品管理</p>
               </li>
-              <li>
-                <SellerButton
-                  text="訂單資訊"
-                  src={sellerorderIcon}
-                  onClick={SellerOrder}
-                />
+              <li className="d-flex">
+                <SellerButton src={sellerorderIcon} onClick={SellerOrder} />
+                <p className="sellerhome__icon_text">訂單資訊</p>
               </li>
             </ul>
           </div>
