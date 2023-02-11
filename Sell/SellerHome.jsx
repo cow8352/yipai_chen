@@ -154,6 +154,7 @@ function SellerHome() {
     )
     console.log(response.data)
   }
+ 
 
   // const handleProductSubmit = (event) => {
   //     event.preventDefault();
@@ -168,9 +169,9 @@ function SellerHome() {
 
   //  console.log(productInputData);
 
-  function testBtn() {
-    console.log(productInputData.photo)
-  }
+  // function testBtn() {
+  //   console.log(productInputData.photo)
+  // }
 
   return (
     <>
@@ -413,6 +414,7 @@ function SellerHome() {
                             border: 'none',
                           }}
                         >
+                        <option value="" style={{display: "none"}}>請選擇</option>
                           <option value="油畫">油畫</option>
                           <option value="素描">素描</option>
                           <option value="版畫">版畫</option>
@@ -477,6 +479,7 @@ function SellerHome() {
                         onChange={handleProductChange}
                         style={{ border: 'none' }}
                       >
+                      <option value="" style={{display: "none"}}>請選擇</option>
                         <option value="印象">印象</option>
                         <option value="表現主義">表現主義</option>
                         <option value="幾何">幾何</option>
@@ -580,10 +583,12 @@ function SellerHome() {
                   </div>
                 </div>
               </div>
-              <Button variant="dark" className="me-2">
+              {/* <Button variant="dark" className="me-2">
                 取消
-              </Button>
-              <Button variant="dark" onClick={handleProductSubmit}>
+              </Button> */}
+              <Button  
+              variant="dark" 
+              disabled={!productInputData.name || !productInputData.photo || !productInputData.width || !productInputData.height || !productInputData.material|| !productInputData.style|| !productInputData.creation_year|| !productInputData.work_hue|| !productInputData.price|| !productInputData.detail_text} onClick={handleProductSubmit}>
                 儲存並送出
               </Button>
             </div>

@@ -211,6 +211,9 @@ padding-top: 20px;
     border-radius: 50%;
     
   }
+  .SellerUpload__color-item.active {
+    border: 2px solid #000;
+  }
   .SellerUpload__color-item-red{
     background-color: rgb(214, 76, 76);
     border: none;
