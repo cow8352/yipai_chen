@@ -33,12 +33,13 @@ function SellerHome() {
   useEffect(() => {
     async function getMember2() {
       let response2 = await axios.get(
-        `http://localhost:3001/api/members/artistData`,
+        `http://localhost:3001/api/members/userData`,
         {
           withCredentials: true,
         }
       )
-      setUserData(response2.data[0].users_id)
+      // setUserData(response2.data[0].users_id)
+      setUserData(response2.data[0])
       console.log(response2.data[0])
       setUserOldDatas(response2.data[0])
       let responseOrder = await axios.get(
@@ -154,24 +155,8 @@ function SellerHome() {
     )
     console.log(response.data)
   }
- 
 
-  // const handleProductSubmit = (event) => {
-  //     event.preventDefault();
-  //     axios
-  //         .post(`http://localhost:3001/product`, {
-  //             name: productInputData.name,
-  //             photo: productInputData.photo,
-  //         })
-  //         .then((response) => console.log(response))
-  //         .catch((error) => console.error(error));
-  // };
-
-  //  console.log(productInputData);
-
-  // function testBtn() {
-  //   console.log(productInputData.photo)
-  // }
+  console.log(UserData)
 
   return (
     <>
@@ -287,6 +272,17 @@ function SellerHome() {
           <div id="SellerUpload" style={{ display: 'none' }}>
             <div className="SellerUpload">
               <div className="SellerUpload__upload">
+                <div>
+                  {/* <img
+                    src={
+                      UserImg.includes('http')
+                        ? UserImg
+                        : 'http://localhost:3001/public/uploads/' + UserImg
+                    } //
+                    alt=""
+                    className=""
+                  /> */}
+                </div>
                 <div>
                   <label className="SellerUpload__uploadIcon">
                     {/* 增加檔案 */}
@@ -414,7 +410,9 @@ function SellerHome() {
                             border: 'none',
                           }}
                         >
-                        <option value="" style={{display: "none"}}>請選擇</option>
+                          <option value="" style={{ display: 'none' }}>
+                            請選擇
+                          </option>
                           <option value="油畫">油畫</option>
                           <option value="素描">素描</option>
                           <option value="版畫">版畫</option>
@@ -479,7 +477,9 @@ function SellerHome() {
                         onChange={handleProductChange}
                         style={{ border: 'none' }}
                       >
-                      <option value="" style={{display: "none"}}>請選擇</option>
+                        <option value="" style={{ display: 'none' }}>
+                          請選擇
+                        </option>
                         <option value="印象">印象</option>
                         <option value="表現主義">表現主義</option>
                         <option value="幾何">幾何</option>
@@ -586,9 +586,22 @@ function SellerHome() {
               {/* <Button variant="dark" className="me-2">
                 取消
               </Button> */}
-              <Button  
-              variant="dark" 
-              disabled={!productInputData.name || !productInputData.photo || !productInputData.width || !productInputData.height || !productInputData.material|| !productInputData.style|| !productInputData.creation_year|| !productInputData.work_hue|| !productInputData.price|| !productInputData.detail_text} onClick={handleProductSubmit}>
+              <Button
+                variant="dark"
+                disabled={
+                  !productInputData.name ||
+                  !productInputData.photo ||
+                  !productInputData.width ||
+                  !productInputData.height ||
+                  !productInputData.material ||
+                  !productInputData.style ||
+                  !productInputData.creation_year ||
+                  !productInputData.work_hue ||
+                  !productInputData.price ||
+                  !productInputData.detail_text
+                }
+                onClick={handleProductSubmit}
+              >
                 儲存並送出
               </Button>
             </div>
@@ -845,11 +858,11 @@ function SellerHome() {
           </div>
         </div>
         <div className="_sellerhome__pic_414 m-3">
-          <img
+          {/* <img
             src={buyerImg}
             alt="sellerHead"
             className="_sellerhome_headImg"
-          />
+          /> */}
           <label className="sellerhome__headIcon_414">
             {/* 增加檔案 */}
             <input type="file" style={{ display: 'none' }}></input>
@@ -857,15 +870,25 @@ function SellerHome() {
         </div>
         <div className="sellerhome__sidebar">
           <div className="sellerhome__sidebar__center">
-            <Link to="/">
-              <img className="sellerhome__sidebar__center_logo" src={logo1} />
-            </Link>
             <div className="_sellerhome__pic_1920 m-3">
-              <img
+
+
+              {/* <img
+                className="sellerhome__sidebar__center_logo"
+                src={
+                  UserData &&
+                  UserData.user_imageHead &&
+                  UserData.user_imageHead.includes('http')
+                    ? UserData.user_imageHead
+                    : 'http://localhost:3001/public/uploads/' +
+                      UserData.user_imageHead
+                }
+              /> */}
+              {/* <img
                 src={buyerImg}
                 alt="sellerHead"
                 className="_sellerhome_headImg"
-              />
+              /> */}
               <label className="sellerhome__headIcon">
                 {/* 增加檔案 */}
                 <input type="file" style={{ display: 'none' }}></input>
