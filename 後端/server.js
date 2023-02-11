@@ -2,15 +2,15 @@
 const expressSession = require("express-session");
 // 安裝session-file-store套件 https://www.npmjs.com/package/session-file-store
 const FileStore = require("session-file-store")(expressSession);
+const { checkLogin } = require("./middlewares/authMiddleware");
 const multer = require('multer')
 const path = require("path");
-const { checkLogin } = require("./middlewares/authMiddleware");
-
 const express = require("express");
 const app = express();
-
 require("dotenv").config();
 const pool = require("./utils/db");
+const fs = require("fs");
+
 // 連線網址 http://localhost:3001
 // 允許跨源存取,預設是全部開放,也可以做部分限制，參考 npm cors 的文件
 const cors = require("cors");
@@ -37,11 +37,14 @@ app.use(
         saveUninitialized: false,
     })
 );
-
+//================================================================
 // middleware => pipeline pattern
-
+const uploadsPhoto = require('./routers/photoUplod');
+// /uploadsPhoto
+app.use('/uploadsPhoto', uploadsPhoto);
 // 處理使用者註冊時上傳的圖片網址
-// app.use('/public', express.static('./public'));
+// http://localhost:3001/public/uploads/XXX.jpg
+app.use("/public", express.static("./public"));
 
 // 首頁
 app.get("/", async (req, res, next) => {
@@ -51,19 +54,20 @@ app.get("/", async (req, res, next) => {
     );
     res.json(data);
 });
+
 //訂單送出請求
 app.post("/submitOrder", async (req, res) => {
     const { userName, productId, orderDate } = req.body;
     try {
-      const [result] = await pool.query(
-        "INSERT INTO user_order (user_id, product_id, order_date) VALUES ((SELECT users_id FROM users WHERE users_name = ?), ?, ?)",
-        [userName, productId, orderDate]
-      );
-      res.json({ status: "success", result });
+        const [result] = await pool.query(
+            "INSERT INTO user_order (user_id, product_id, order_date) VALUES ((SELECT users_id FROM users WHERE users_name = ?), ?, ?)",
+            [userName, productId, orderDate]
+        );
+        res.json({ status: "success", result });
     } catch (error) {
-      res.json({ status: "error", error });
+        res.json({ status: "error", error });
     }
-  });
+});
 
 // 購物車
 app.get("/cart", async (req, res, next) => {
@@ -75,7 +79,9 @@ app.get("/cart", async (req, res, next) => {
 });
 app.get("/maybelike", async (req, res, next) => {
     console.log("這裡是 /maybelike");
-    let [data] = await pool.query("SELECT * FROM product ORDER BY RAND() LIMIT 0,5 ");
+    let [data] = await pool.query(
+        "SELECT * FROM product ORDER BY RAND() LIMIT 0,5 "
+    );
     res.json(data);
 });
 // 商品頁
@@ -85,65 +91,62 @@ app.get("/product", async (req, res, next) => {
     res.json(data);
 });
 
-
-
-// const path = require('path');
 // 設定註冊上傳圖片存哪裡: 位置跟名稱
 const storage = multer.diskStorage({
-  // 設定儲存的目的地 -> 檔案夾
-  // 先手動建立好檔案夾 public/uploads
-  destination: function (req, file, cb) {
-    // path.join: 避免不同的作業系統之間 / 或 \
-    // __dirname 目前檔案所在的目錄路徑
-    cb(null, path.join(__dirname, '.', 'public', 'uploads'));
-  },
-  // 圖片名稱
-  filename: function (req, file, cb) {
-    console.log('multer storage', req.file);
-    const ext = file.originalname.split('.').pop();
-    //使用圖片的名稱套件 uuid
-    cb(null, `${Date.now()}.${ext}`);
-  },
-});
-// 真正在處理上傳
-const uploader = multer({
-  storage: storage,
-  // 圖片格式的 validation
-  fileFilter: function (req, file, cb) {
-    if (file.mimetype !== 'image/jpeg' && file.mimetype !== 'image/jpg' && file.mimetype !== 'image/png') {
-      cb(new Error('上傳圖片格式不合規定'), false);
-    } else {
-      cb(null, true);
-    }
-  },
-  // 限制檔案的大小
-  limits: {
-    // 1k = 1024 => 200k 200x1024
-    fileSize: 200 * 1024, // 204800
-  },
-});
-
-app.post("/product",uploader.single('photo'), async (req, res, next) => {
-    console.log("product post", req.body, req.file);
-    let [data] = await pool.query(
-        `INSERT INTO product (img_file, name, width , height, material, product_style, artist, creation_year, work_hue, price, detail_text) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?); `,
-        [
-            req.file.filename,
-            req.body.name,
-            req.body.width,
-            req.body.height,
-            req.body.material,
-            req.body.style,
-            req.body.artist,
-            req.body.creation_year,
-            req.body.work_hue,
-            req.body.price,
-            req.body.detail_text,
-        ]
-    );
-    console.log(req.body);
-      res.json(data);
-    });
+    // 設定儲存的目的地 -> 檔案夾
+    // 先手動建立好檔案夾 public/uploads
+    destination: function (req, file, cb) {
+      // path.join: 避免不同的作業系統之間 / 或 \
+      // __dirname 目前檔案所在的目錄路徑
+      cb(null, path.join(__dirname, '.', 'public', 'uploads'));
+    },
+    // 圖片名稱
+    filename: function (req, file, cb) {
+      console.log('multer storage', req.file);
+      const ext = file.originalname.split('.').pop();
+      //使用圖片的名稱套件 uuid
+      cb(null, `${Date.now()}.${ext}`);
+    },
+  });
+  // 真正在處理上傳
+  const uploader = multer({
+    storage: storage,
+    // 圖片格式的 validation
+    fileFilter: function (req, file, cb) {
+      if (file.mimetype !== 'image/jpeg' && file.mimetype !== 'image/jpg' && file.mimetype !== 'image/png') {
+        cb(new Error('上傳圖片格式不合規定'), false);
+      } else {
+        cb(null, true);
+      }
+    },
+    // 限制檔案的大小
+    limits: {
+      // 1k = 1024 => 200k 200x1024
+      fileSize: 200 * 1024, // 204800
+    },
+  });
+  
+  app.post("/product",uploader.single('photo'), async (req, res, next) => {
+      console.log("product post", req.body, req.file);
+      let [data] = await pool.query(
+          `INSERT INTO product (img_file, name, width , height, material, product_style, artist, creation_year, work_hue, price, detail_text) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?); `,
+          [
+              req.file.filename,
+              req.body.name,
+              req.body.width,
+              req.body.height,
+              req.body.material,
+              req.body.style,
+              req.body.artist,
+              req.body.creation_year,
+              req.body.work_hue,
+              req.body.price,
+              req.body.detail_text,
+          ]
+      );
+      console.log(req.body);
+        res.json(data);
+      });
 
 
 
@@ -253,7 +256,13 @@ app.get("/artist/:artistId", async (req, res, next) => {
     );
     res.json(data);
 });
-
+app.get("/image/:filename", (req, res) => {
+    fs.readFile(`../uploads/${req.params.filename}`, (err, data) => {
+        if (err) throw err;
+        res.writeHead(200, { "Content-Type": "image/jpeg" });
+        res.end(data);
+    });
+});
 app.use((req, res, next) => {
     console.log("出現404！");
     res.status(404).send("錯誤代號404，請輸入正確的網址");
