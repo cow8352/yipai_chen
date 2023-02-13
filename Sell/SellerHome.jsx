@@ -1,12 +1,12 @@
 import { React, useState, useEffect } from 'react'
 import './sellerhome.css'
-import { Link } from 'react-router-dom'
-import logo1 from '../../../logo1.svg'
+// import { Link } from 'react-router-dom'
+// import logo1 from '../../../logo1.svg'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import Button from 'react-bootstrap/Button'
 import { TiArrowSortedDown } from 'react-icons/ti'
 import SellerButton from './SellerButton'
-import { RiSearch2Line } from 'react-icons/ri'
+// import { RiSearch2Line } from 'react-icons/ri'
 import axios from 'axios'
 
 import {
@@ -18,7 +18,7 @@ import {
 } from './SellerOnclick'
 
 // icon
-import buyerImg from '../image/buyHead.png'
+// import buyerImg from '../image/buyHead.png'
 import sellerHouseIcon from '../image/sellerHouseIcon.svg'
 import sellerpageIcon from '../image/sellerpageIcon.svg'
 import sellerupIcon from '../image/sellerupIcon.svg'
@@ -26,20 +26,42 @@ import sellerlistIcon from '../image/sellerlistIcon.svg'
 import sellerorderIcon from '../image/sellerorderIcon.svg'
 
 function SellerHome() {
-  let [UserData, setUserData] = useState() //記錄數值
-  let [UserOldDatas, setUserOldDatas] = useState() //原本的數據
-  let [UserOrders, setUserOrders] = useState() //記錄使用者訂單
+  let [UserData, setUserData] = useState({}) //記錄數值
+  let [UserOldDatas, setUserOldDatas] = useState({}) //原本的數據
+  let [UserOrders, setUserOrders] = useState([]) //記錄使用者訂單
+  let [sellerProducts, setSellerProducts] = useState([]) //記錄使用者圖畫
+  let [sellerOrders, setSellerOrders] = useState([]) //記錄使用者訂單
+  let [sellerOrder, setSellerOrder] = useState([]) //記錄使用者訂單
+
   // 只執行一次
   useEffect(() => {
     async function getMember2() {
+      //全部的訂單
+      let response4 = await axios.get(
+        `http://localhost:3001/api/members/sellerOrder`,
+        {
+          withCredentials: true,
+        }
+      )
+      setSellerOrders(response4)
+      //記錄使用者圖畫
+      let response3 = await axios.get(
+        `http://localhost:3001/api/members/sellerProduct`,
+        {
+          withCredentials: true,
+        }
+      )
+      setSellerProducts(response3)
+      console.log(sellerProducts)
+
       let response2 = await axios.get(
         `http://localhost:3001/api/members/userData`,
         {
           withCredentials: true,
         }
       )
-      // setUserData(response2.data[0].users_id)
-      setUserData(response2.data[0])
+      setUserData(response2.data[0].users_id)
+      //   setUserData(response2.data[0])
       console.log(response2.data[0])
       setUserOldDatas(response2.data[0])
       let responseOrder = await axios.get(
@@ -52,6 +74,7 @@ function SellerHome() {
     }
     getMember2()
   }, [])
+
   //  記錄輸入的數值
   const [UserInputData, setUserInputData] = useState({
     username: '',
@@ -96,9 +119,42 @@ function SellerHome() {
       .then((response) => console.log(response))
       .catch((error) => console.error(error))
   }
-  //   console.log(UserOldDatas)
-  //   console.log(UserOrders)
+  console.log(UserOldDatas)
+  console.log(UserOrders)
+  //================================================================
+  //  上傳大頭貼
+  const [sellerPic, setSellerPic] = useState({
+    photo: '',
+  })
+  // 每次輸入後更新產品資料
+  useEffect(() => {
+    console.log(sellerPic)
+  }, [sellerPic])
 
+  // 檔案更新值
+  function handleSellerPicUpload(e) {
+    // file input 的值並不是存在 value 欄位裡
+    setSellerPic({ ...sellerPic, photo: e.target.files[0] })
+  }
+
+  // 送出輸入資料
+  async function handleSellerPicSubmit(e) {
+    console.log('handleProductSubmit')
+    // 關閉表單的預設行為
+    e.preventDefault()
+    let formData = new FormData()
+    formData.append('photo', sellerPic.photo)
+    let response = await axios.post(
+      'http://localhost:3001/uploadsPhoto/product',
+      formData,
+      {
+        withCredentials: true,
+      }
+    )
+    console.log(response.data)
+    alert('圖片上傳成功')
+  }
+  //========================================================
   //  記錄輸入的產品
   const [productInputData, setProductInputData] = useState({
     name: '',
@@ -123,19 +179,15 @@ function SellerHome() {
       [event.target.name]: event.target.value,
     })
   }
-
   function handleUpload(e) {
     // file input 的值並不是存在 value 欄位裡
     setProductInputData({ ...productInputData, photo: e.target.files[0] })
   }
-
   // 送出輸入資料
   async function handleProductSubmit(e) {
     console.log('handleProductSubmit')
     // 關閉表單的預設行為
-    e.preventDefault()
-
-    // let response = await axios.post('http://localhost:3001/product', productInputData);
+    // e.preventDefault()
     let formData = new FormData()
     formData.append('name', productInputData.name)
     formData.append('photo', productInputData.photo)
@@ -154,9 +206,47 @@ function SellerHome() {
       // withCredentials: true,
     )
     console.log(response.data)
+    alert('圖片上傳成功')
   }
 
   console.log(UserData)
+  console.log(sellerProducts.data)
+  console.log(sellerOrders.data)
+  console.log(sellerOrder)
+  // ================sellerProduct========================
+  
+
+
+
+
+  
+  // ================sellerOrder========================
+  
+  const [selectedOrder, setSelectedOrder] = useState(null)
+
+  let filteredOrders = []
+  if (
+    sellerOrders &&
+    sellerOrders.data &&
+    sellerOrders.data.length &&
+    sellerProducts &&
+    sellerProducts.data &&
+    sellerProducts.data.length
+  ) {
+    filteredOrders = sellerOrders.data.filter((order) => {
+      return sellerProducts.data.some(
+        (product) => product.id === order.product_id
+      )
+    })
+    console.log(filteredOrders)
+    // setSellerOrders(filteredOrders);
+    // console.log(sellerOrders);
+  }
+  console.log(filteredOrders)
+
+  // ================sellerOrder END========================
+
+  // const [showText, setShowText] = useState(false)
 
   return (
     <>
@@ -609,174 +699,82 @@ function SellerHome() {
           <div id="SellerProduct" style={{ display: 'none' }}>
             <section id="SellerProduct__section ">
               <nav id="SellerProduct__nav d-flex">
-                <h1 className="SellerProduct__total">共有26件</h1>
-                <Button className="SellerProduct__aside_add" variant="dark">
+                <h1 className="SellerProduct__total">
+                  共有
+                  {sellerProducts && sellerProducts.data
+                    ? sellerProducts.data.length
+                    : 0}
+                  件畫作
+                </h1>
+                {/* <Button className="SellerProduct__aside_add mt-5" variant="dark">
                   新增商品+
-                </Button>
-
-                <div className="SellerProduct__aside-list">
+                </Button> */}
+                {/* <div className="SellerProduct__aside-list">
                   <Button className="SellerProduct__aside-sort" variant="dark">
                     排序
                   </Button>
-                </div>
+                </div> */}
               </nav>
               <main id="SellerProduct__main">
                 <div class="SellerProduct__main_container">
                   <div className="SellerProduct＿main row align-items-start">
-                    <div className="SellerProduct__item col">
-                      <img
-                        className="SellerProduct__card-img-top"
-                        src="https://sh-cdn.singulart.com/eyJidWNrZXQiOiJzaW5ndWxhcnQtd2Vic2l0ZS1wcm9kIiwia2V5IjoiYXJ0d29ya3NcL3YyXC9jcm9wcGVkXC8xMDgwMVwvbWFpblwvem9vbVwvMTQzOTc5NV85YTU0YjcyZDE0YzdiOTM4MGI2YzFhMWU4OGY2M2UyYS5qcGVnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo3NTAsImhlaWdodCI6NzUwLCJmaXQiOiJpbnNpZGUifSwidG9Gb3JtYXQiOiJ3ZWJwIiwid2VicCI6eyJxdWFsaXR5Ijo4MH19fQ==?signature=3354b764d2ecd526da29327b4a7fd33227b4909b8ea40e6d6c5e46f2700d84b9"
-                      />
-
-                      <div className="SellerProduct__card-text">
-                        <p className="SellerProduct__productId"></p>
-                        <p className="SellerProduct__article">
-                          作者作者作者作者
-                        </p>
-                        <p className="SellerProduct__price">$16900</p>
-                      </div>
-                    </div>
-                    <div className="SellerProduct__item col">
-                      <img
-                        className="SellerProduct__card-img-top"
-                        src="https://sh-cdn.singulart.com/eyJidWNrZXQiOiJzaW5ndWxhcnQtd2Vic2l0ZS1wcm9kIiwia2V5IjoiYXJ0d29ya3NcL3YyXC9jcm9wcGVkXC8zMzA1N1wvbWFpblwvem9vbVwvMTUwMjYxOV83OTI0YWVmNjJjZjYxYmVkNDEzZmIyMTJhOTA2NTI0Mi5qcGVnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo3NTAsImhlaWdodCI6NzUwLCJmaXQiOiJpbnNpZGUifSwidG9Gb3JtYXQiOiJ3ZWJwIiwid2VicCI6eyJxdWFsaXR5Ijo4MH19fQ==?signature=5160b85669a83546d04479b705b9c1aaccbdb3d6e1605ef10ca6d45baabdd6d0"
-                      />
-
-                      <div className="SellerProduct__card-text">
-                        <p className="SellerProduct__productId">
-                          品名品名品名品名
-                        </p>
-                        <p className="SellerProduct__article">
-                          作者作者作者作者
-                        </p>
-                        <p className="SellerProduct__price">$16900</p>
-                      </div>
-                    </div>
-
-                    <div className="SellerProduct__item col">
-                      <img
-                        className="SellerProduct__card-img-top"
-                        src="https://sh-cdn.singulart.com/eyJidWNrZXQiOiJzaW5ndWxhcnQtd2Vic2l0ZS1wcm9kIiwia2V5IjoiYXJ0d29ya3NcL3YyXC9jcm9wcGVkXC8xOTQxNVwvbWFpblwvem9vbVwvODg3OTQxXzYwNzNhNjU4MzcyZTFiNTY2MzVlNTVlZDRhZjBlNTFmLmpwZWciLCJlZGl0cyI6eyJyZXNpemUiOnsid2lkdGgiOjc1MCwiaGVpZ2h0Ijo3NTAsImZpdCI6Imluc2lkZSJ9LCJ0b0Zvcm1hdCI6IndlYnAiLCJ3ZWJwIjp7InF1YWxpdHkiOjgwfX19?signature=afb4f906096d0f37c64b83457e1f8c52b3b75c6f0494b03efa5684e8356086cc"
-                      />
-
-                      <div className="SellerProduct__card-text">
-                        <p className="SellerProduct__productId">品名品名品名</p>
-                        <p className="SellerProduct__article">
-                          作者作者作者作者
-                        </p>
-                        <p className="SellerProduct__price">$16900</p>
-                      </div>
-                    </div>
-
-                    <div className="SellerProduct__item col">
-                      <img
-                        className="SellerProduct__card-img-top"
-                        src="https://sh-cdn.singulart.com/eyJidWNrZXQiOiJzaW5ndWxhcnQtd2Vic2l0ZS1wcm9kIiwia2V5IjoiYXJ0d29ya3NcL3YyXC9jcm9wcGVkXC8zMzA1N1wvbWFpblwvem9vbVwvMTUwMjYxOV83OTI0YWVmNjJjZjYxYmVkNDEzZmIyMTJhOTA2NTI0Mi5qcGVnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo3NTAsImhlaWdodCI6NzUwLCJmaXQiOiJpbnNpZGUifSwidG9Gb3JtYXQiOiJ3ZWJwIiwid2VicCI6eyJxdWFsaXR5Ijo4MH19fQ==?signature=5160b85669a83546d04479b705b9c1aaccbdb3d6e1605ef10ca6d45baabdd6d0"
-                      />
-
-                      <div className="SellerProduct__card-text">
-                        <p className="SellerProduct__productId">
-                          品名品名品名品名
-                        </p>
-                        <p className="SellerProduct__article">
-                          作者作者作者作者
-                        </p>
-                        <p className="SellerProduct__price">$16900</p>
-                      </div>
-                    </div>
-                    <div className="SellerProduct__item col">
-                      <img
-                        className="SellerProduct__card-img-top"
-                        src="https://sh-cdn.singulart.com/eyJidWNrZXQiOiJzaW5ndWxhcnQtd2Vic2l0ZS1wcm9kIiwia2V5IjoiYXJ0d29ya3NcL3YyXC9jcm9wcGVkXC8zMzA1N1wvbWFpblwvem9vbVwvMTUwMjYxOV83OTI0YWVmNjJjZjYxYmVkNDEzZmIyMTJhOTA2NTI0Mi5qcGVnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo3NTAsImhlaWdodCI6NzUwLCJmaXQiOiJpbnNpZGUifSwidG9Gb3JtYXQiOiJ3ZWJwIiwid2VicCI6eyJxdWFsaXR5Ijo4MH19fQ==?signature=5160b85669a83546d04479b705b9c1aaccbdb3d6e1605ef10ca6d45baabdd6d0"
-                      />
-
-                      <div className="SellerProduct__card-text">
-                        <p className="SellerProduct__productId">
-                          品名品名品名品名
-                        </p>
-                        <p className="SellerProduct__article">
-                          作者作者作者作者
-                        </p>
-                        <p className="SellerProduct__price">$16900</p>
-                      </div>
-                    </div>
-                    <div className="SellerProduct__item col">
-                      <img
-                        className="SellerProduct__card-img-top"
-                        src="https://sh-cdn.singulart.com/eyJidWNrZXQiOiJzaW5ndWxhcnQtd2Vic2l0ZS1wcm9kIiwia2V5IjoiYXJ0d29ya3NcL3YyXC9jcm9wcGVkXC8zMzA1N1wvbWFpblwvem9vbVwvMTUwMjYxOV83OTI0YWVmNjJjZjYxYmVkNDEzZmIyMTJhOTA2NTI0Mi5qcGVnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo3NTAsImhlaWdodCI6NzUwLCJmaXQiOiJpbnNpZGUifSwidG9Gb3JtYXQiOiJ3ZWJwIiwid2VicCI6eyJxdWFsaXR5Ijo4MH19fQ==?signature=5160b85669a83546d04479b705b9c1aaccbdb3d6e1605ef10ca6d45baabdd6d0"
-                      />
-
-                      <div className="SellerProduct__card-text">
-                        <p className="SellerProduct__productId">
-                          品名品名品名品名
-                        </p>
-                        <p className="SellerProduct__article">
-                          作者作者作者作者
-                        </p>
-                        <p className="SellerProduct__price">$16900</p>
-                      </div>
-                    </div>
-                    <div className="SellerProduct__item col">
-                      <img
-                        className="SellerProduct__card-img-top"
-                        src="https://sh-cdn.singulart.com/eyJidWNrZXQiOiJzaW5ndWxhcnQtd2Vic2l0ZS1wcm9kIiwia2V5IjoiYXJ0d29ya3NcL3YyXC9jcm9wcGVkXC8zMzA1N1wvbWFpblwvem9vbVwvMTUwMjYxOV83OTI0YWVmNjJjZjYxYmVkNDEzZmIyMTJhOTA2NTI0Mi5qcGVnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo3NTAsImhlaWdodCI6NzUwLCJmaXQiOiJpbnNpZGUifSwidG9Gb3JtYXQiOiJ3ZWJwIiwid2VicCI6eyJxdWFsaXR5Ijo4MH19fQ==?signature=5160b85669a83546d04479b705b9c1aaccbdb3d6e1605ef10ca6d45baabdd6d0"
-                      />
-
-                      <div className="SellerProduct__card-text">
-                        <p className="SellerProduct__productId">
-                          品名品名品名品名
-                        </p>
-                        <p className="SellerProduct__article">
-                          作者作者作者作者
-                        </p>
-                        <p className="SellerProduct__price">$16900</p>
-                      </div>
-                    </div>
-                    <div className="SellerProduct__item col">
-                      <img
-                        className="SellerProduct__card-img-top"
-                        src="https://sh-cdn.singulart.com/eyJidWNrZXQiOiJzaW5ndWxhcnQtd2Vic2l0ZS1wcm9kIiwia2V5IjoiYXJ0d29ya3NcL3YyXC9jcm9wcGVkXC8zMzA1N1wvbWFpblwvem9vbVwvMTUwMjYxOV83OTI0YWVmNjJjZjYxYmVkNDEzZmIyMTJhOTA2NTI0Mi5qcGVnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo3NTAsImhlaWdodCI6NzUwLCJmaXQiOiJpbnNpZGUifSwidG9Gb3JtYXQiOiJ3ZWJwIiwid2VicCI6eyJxdWFsaXR5Ijo4MH19fQ==?signature=5160b85669a83546d04479b705b9c1aaccbdb3d6e1605ef10ca6d45baabdd6d0"
-                      />
-
-                      <div className="SellerProduct__card-text">
-                        <p className="SellerProduct__productId">
-                          品名品名品名品名
-                        </p>
-                        <p className="SellerProduct__article">
-                          作者作者作者作者
-                        </p>
-                        <p className="SellerProduct__price">$16900</p>
-                      </div>
-                    </div>
+                    {sellerProducts &&
+                      sellerProducts.data &&
+                      sellerProducts.data.length > 0 &&
+                      sellerProducts.data.map((seller_order, index) => (
+                        <a
+                          className="SellerProduct__item col"
+                          key={seller_order.id}
+                        >
+                          <img
+                            className="SellerProduct__card-img-top"
+                            src={seller_order.img_file}
+                            alt={seller_order.name}
+                          />
+                          <div className="SellerProduct__card-text">
+                            <p className="SellerProduct__productId">
+                              {seller_order.name}
+                            </p>
+                            <p className="SellerProduct__price">
+                              金額:{seller_order.price}
+                            </p>
+                          </div>
+                        </a>
+                      ))}
                   </div>
                 </div>
               </main>
             </section>
           </div>
           <div id="SellerOrder" style={{ display: 'none' }}>
-            <div className="sellerorder__main__text ">
+            <div className="sellerorder__main__text m-5">
               <div>
-                <h1>共有幾筆訂單</h1>
+                <h1>
+                  共有
+                  {filteredOrders && filteredOrders.length
+                    ? filteredOrders.length
+                    : 0}
+                  筆訂單
+                </h1>
               </div>
-              <div className="sellerorder__main__text__input">
+
+              {/* <div className="sellerorder__main__text__input">
                 <input type="text" placeholder="輸入文字搜尋" />
                 <Button variant="dark">排序</Button>
-              </div>
+              </div> */}
             </div>
             <div className="sellerorder__main__table">
               <table className="sellerorder__main__table_table">
                 <thead>
                   <tr>
                     <th>
-                      <Button
+                      <div
                         className=""
-                        variant="--color-bg"
-                        style={{ border: 'none' }}
+                        // variant="--color-bg"
+                        style={{ fontWeight: '400' }}
                       >
                         訂單編號
-                        <TiArrowSortedDown />
-                      </Button>
+                      </div>
                     </th>
                     <th>
                       <Button
@@ -809,49 +807,76 @@ function SellerHome() {
                       </Button>
                     </th>
                     <th className="sellerorder__main_detil_count">
-                      <Button
-                        className=""
-                        variant="--color-bg"
-                        style={{ border: 'none' }}
-                      >
+                      <div className="" style={{ fontWeight: '400' }}>
                         售出數量
-                        <TiArrowSortedDown />
-                      </Button>
+                      </div>
                     </th>
                     <th className="sellerorder__main_detil_button"></th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>0000000000000000000000</td>
-                    <td>未出貨</td>
-                    <td>2000</td>
-                    <td>2023/01/14</td>
-                    <td className="sellerorder__main_detil_count">1</td>
-                    <td className="sellerorder__main_detil_button">
-                      <Button variant="dark">詳細資料</Button>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>0000000000000000000000</td>
-                    <td>未出貨</td>
-                    <td>2000</td>
-                    <td>2023/01/14</td>
-                    <td className="sellerorder__main_detil_count">1</td>
-                    <td className="sellerorder__main_detil_button">
-                      <Button variant="dark">詳細資料</Button>
-                    </td>
-                  </tr>{' '}
-                  <tr>
-                    <td>0000000000000000000000</td>
-                    <td>未出貨</td>
-                    <td>2000</td>
-                    <td>2023/01/14</td>
-                    <td className="sellerorder__main_detil_count">1</td>
-                    <td className="sellerorder__main_detil_button">
-                      <Button variant="dark">詳細資料</Button>
-                    </td>
-                  </tr>
+                  {filteredOrders &&
+                    filteredOrders.length > 0 &&
+                    filteredOrders.map((order, index) => (
+                      <tr key={order.order_id}>
+                        <td>202302000{order.order_id}</td>
+                        <td>
+                          {order.order_status === 1
+                            ? '待出貨'
+                            : order.order_status === 2
+                            ? '出貨中'
+                            : '已送達'}
+                        </td>
+                        <td>{order.order_price}2000</td>
+                        <td>{order.order_date.slice(0, 10)}</td>
+                        <td className="sellerorder__main_detil_count">
+                          {order.amount}
+                        </td>
+                        <td className="sellerorder__main_detil_button">
+                          <Button
+                            value={order.order_id}
+                            variant="dark"
+                            onClick={() => setSelectedOrder(order)}
+                          >
+                            詳細資料
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                    <div>
+
+                  <div>
+                    {' '}
+                    {selectedOrder && (
+                      <div>
+                        詳細資訊：
+                        <br />
+                        訂單ID：{selectedOrder.order_id}
+                        <br />
+                        訂單狀態：
+                        {selectedOrder.order_status === 1
+                          ? '待出貨'
+                          : selectedOrder.order_status === 2
+                          ? '出貨中'
+                          : '已送達'}
+                        <br />
+                        金額：{selectedOrder.order_price}2000
+                        <br />
+                        日期：{selectedOrder.order_date.slice(0, 10)}
+                        <br />
+                        數量：{selectedOrder.amount}
+                        <br />
+                        地址：{selectedOrder.send_address}
+                        <br />
+                        產品編號：{selectedOrder.product_id}
+                        <br />
+                        金額：{selectedOrder.total}
+                        <br />
+                        買家：{selectedOrder.user_id}
+                      </div>
+                    )}
+                    </div>
+                  </div>
                 </tbody>
               </table>
             </div>
@@ -871,28 +896,37 @@ function SellerHome() {
         <div className="sellerhome__sidebar">
           <div className="sellerhome__sidebar__center">
             <div className="_sellerhome__pic_1920 m-3">
-
-
-              {/* <img
-                className="sellerhome__sidebar__center_logo"
-                src={
-                  UserData &&
-                  UserData.user_imageHead &&
-                  UserData.user_imageHead.includes('http')
-                    ? UserData.user_imageHead
-                    : 'http://localhost:3001/public/uploads/' +
-                      UserData.user_imageHead
-                }
-              /> */}
-              {/* <img
-                src={buyerImg}
-                alt="sellerHead"
-                className="_sellerhome_headImg"
-              /> */}
-              <label className="sellerhome__headIcon">
+              {UserOldDatas && UserOldDatas.user_imageHead ? (
+                <img
+                  src={
+                    UserOldDatas.user_imageHead.includes('http')
+                      ? UserOldDatas.user_imageHead
+                      : 'http://localhost:3001/public/uploads/' +
+                        UserOldDatas.user_imageHead
+                  }
+                  alt="buyHead"
+                  className="_buyLogin_headImg"
+                  style={{
+                    width: '140px',
+                    height: '140px',
+                    objectFit: 'cover',
+                    borderRadius: '50%',
+                  }}
+                />
+              ) : null}
+              <label className="_buyLogin_headIcon">
                 {/* 增加檔案 */}
-                <input type="file" style={{ display: 'none' }}></input>
+                <div>
+                  <input
+                    type="file"
+                    id="imageHead"
+                    name="imageHead"
+                    style={{ display: 'none' }}
+                    onChange={handleSellerPicUpload}
+                  ></input>
+                </div>
               </label>
+              <button onClick={handleSellerPicSubmit}>送出</button>
             </div>
             <ul className="list-unstyled sellerhome__icon ">
               <li className="d-flex">
